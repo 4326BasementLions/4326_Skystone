@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.StateMachine; //necessary
 import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
 import java.util.Locale;
-
+import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name="State Machine Test 2.05", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
@@ -34,6 +34,8 @@ public class ConceptStateMachine extends OpMode
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
+
+    Servo clasp;
 
     ColorSensor colorSensor;
 
@@ -57,6 +59,8 @@ public class ConceptStateMachine extends OpMode
         leftBack = hardwareMap.dcMotor.get("left back");
 
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
+
+        clasp = hardwareMap.servo.get("clasp");
 
 
 
