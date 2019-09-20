@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 
-@Autonomous(name="State Machine Test 2.03", group="Iterative Opmode")
+@Autonomous(name="State Machine Test 2.05", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
 
@@ -47,6 +47,7 @@ public class ConceptStateMachine extends OpMode
 
 
     colorMoveState parkUnderBridge;
+    ColorSenseStopState parkUnderBridge2;
 
     @Override
     public void init() {
@@ -93,11 +94,16 @@ public class ConceptStateMachine extends OpMode
         Testy = new DriveAvoidPIDState(5, 30, motors, imu);
         Testy.setNextState(null);
 
+        parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .15, "forward");
+        parkUnderBridge2.setNextState(null);
+
         Testie = new GyroTurnCWByPID(90, 5, motors, imu);
-        Testie.setNextState(null);
+        Testie.setNextState(parkUnderBridge2);
 
         parkUnderBridge = new colorMoveState(motors, colorSensor, "red", 1, "backward");
         parkUnderBridge.setNextState(null);
+
+
 
 
         //   distanceState = new distanceMoveState(motors, mrrs, 6.0);
@@ -109,7 +115,7 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(parkUnderBridge);
+        machine = new StateMachine(Testie);
 
     }
 
@@ -119,8 +125,11 @@ public class ConceptStateMachine extends OpMode
 
         //telemetry.addData("correction", Testy.getTelemetry());
         telemetry.addData("color", parkUnderBridge.getColor());
+
+        telemetry.addData("redVal", parkUnderBridge2.getColor());
+
         telemetry.update();
-        machine.update();
+         machine.update();
 
     }
 
