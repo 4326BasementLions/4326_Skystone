@@ -25,11 +25,11 @@ public class timeState implements StateMachine.State {
 
     private State NextState;
 
-    private int Time;
+    private double Time;
     ElapsedTime mRuntime = new ElapsedTime();
 
 
-    public timeState(int time, double power, ArrayList<DcMotor> motor, String movement) {
+    public timeState(double time, double power, ArrayList<DcMotor> motor, String movement) {
         Time = time;
         leftFront = motor.get(0);
         rightFront = motor.get(1);

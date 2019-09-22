@@ -42,7 +42,7 @@ public class ConceptStateMachine extends OpMode
     public timeState Test;// new timeState(2,5, motors, "forward");;
     DriveAvoidPIDState Testy;
 
-    GyroTurnCWByPID Testie;
+    GyroTurnCWByPID Turn90;
 
 
     BNO055IMU imu;
@@ -50,6 +50,10 @@ public class ConceptStateMachine extends OpMode
 
     colorMoveState parkUnderBridge;
     ColorSenseStopState parkUnderBridge2;
+
+    timeState miniDrive;
+
+    GyroTurnCCWByPID turnRightAngle;
 
     @Override
     public void init() {
@@ -60,7 +64,7 @@ public class ConceptStateMachine extends OpMode
 
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
-        clasp = hardwareMap.servo.get("clasp");
+        //clasp = hardwareMap.servo.get("clasp");
 
 
 
@@ -92,25 +96,19 @@ public class ConceptStateMachine extends OpMode
         rightBack.setPower(0);
         leftBack.setPower(0);
 
-        Test = new timeState(5,5, motors, "backward");
-        Test.setNextState(null);
 
-        Testy = new DriveAvoidPIDState(5, 30, motors, imu);
-        Testy.setNextState(null);
-
+        //State Declarations
+        miniDrive = new timeState(.5, .5, motors, "forward");
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .15, "forward");
+        //Turn90 = new GyroTurnCWByPID(270, 5, motors, imu);
+        turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
+
+        //Setting up the order
+        miniDrive.setNextState(turnRightAngle);
+        turnRightAngle.setNextState(parkUnderBridge2);
         parkUnderBridge2.setNextState(null);
 
-        Testie = new GyroTurnCWByPID(90, 5, motors, imu);
-        Testie.setNextState(parkUnderBridge2);
 
-        parkUnderBridge = new colorMoveState(motors, colorSensor, "red", 1, "backward");
-        parkUnderBridge.setNextState(null);
-
-
-
-
-        //   distanceState = new distanceMoveState(motors, mrrs, 6.0);
 
 
 
@@ -119,7 +117,7 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(Testie);
+        machine = new StateMachine(miniDrive);
 
     }
 
@@ -128,7 +126,7 @@ public class ConceptStateMachine extends OpMode
     public void loop()  {
 
         //telemetry.addData("correction", Testy.getTelemetry());
-        telemetry.addData("color", parkUnderBridge.getColor());
+       // telemetry.addData("color", parkUnderBridge.getColor());
 
         telemetry.addData("redVal", parkUnderBridge2.getColor());
 

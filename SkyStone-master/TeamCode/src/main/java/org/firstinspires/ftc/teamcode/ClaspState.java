@@ -50,7 +50,10 @@ public class ClaspState implements StateMachine.State {
     @Override
     public StateMachine.State update() {
 
-        arm.setPosition(0);
+        if(arm.getPosition() == 0)
+            arm.setPosition(1);
+        else
+            arm.setPosition(0);
 
       return NextState;
 
