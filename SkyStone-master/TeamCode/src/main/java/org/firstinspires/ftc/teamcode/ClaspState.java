@@ -34,13 +34,17 @@ public class ClaspState implements StateMachine.State {
     DcMotor rightBack;
 
     Servo arm;
-    private StateMachine.State NextState;
-    public ClaspState(ArrayList<DcMotor> motor, Servo clasp){
+    State NextState;
+    ElapsedTime mRuntime = new ElapsedTime();
+    Double time;
+    // private StateMachine.State NextState;
+    public ClaspState(ArrayList<DcMotor> motor, Servo clasp, double sec){
         leftFront = motor.get(0);
         rightFront = motor.get(1);
         leftBack = motor.get(2);
         rightBack = motor.get(3);
         arm = clasp;
+        time = sec;
     }
     @Override
     public void start() {
@@ -48,14 +52,20 @@ public class ClaspState implements StateMachine.State {
     }
 
     @Override
-    public StateMachine.State update() {
-
-        if(arm.getPosition() == 0)
-            arm.setPosition(1);
-        else
+    public State update() {
+        while (mRuntime.seconds() < time) {
             arm.setPosition(0);
+        }
+//        if(arm.getPosition() == 0)
+//            arm.setPosition(1);
+//        else
+
 
       return NextState;
 
+    }
+
+    public void setNextState(State state) {
+        NextState = state;
     }
 }

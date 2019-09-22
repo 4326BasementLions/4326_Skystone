@@ -24,7 +24,7 @@ public class ColorSenseStopState implements State {
         cs1 = colorSensor;
         cval = color;
         pow = power;
-        this.dir = direction;
+        dir = direction;
         //red = cs1.red();
     }
 

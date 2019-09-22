@@ -139,9 +139,9 @@ public class GyroTurnCCWByPID implements StateMachine.State {
         lastAngles = angles;
 
         if(clockwise == false){
-            return globalAngle*1;
+            return globalAngle*1*(-1);
         }else if(clockwise == true){
-            return globalAngle*-1;
+            return globalAngle*-1 *(-1);
         }
         else //if(!clockwise ==)
             return globalAngle;

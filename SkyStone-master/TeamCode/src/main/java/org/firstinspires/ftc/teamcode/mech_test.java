@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="mechtesting", group="Iterative Opmode")
-public class mech_test extends OpMode
+public class        mech_test extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -71,7 +71,7 @@ public class mech_test extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        lift  = hardwareMap.get(DcMotor.class, "lift");
+      //  lift  = hardwareMap.get(DcMotor.class, "lift");
         left = hardwareMap.get(Servo.class, "left");
         right = hardwareMap.get(Servo.class, "right");
 
@@ -80,6 +80,8 @@ public class mech_test extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("leftpos", left.getPosition());
+        telemetry.addData("rightpos", right.getPosition());
     }
 
     /*
@@ -94,8 +96,12 @@ public class mech_test extends OpMode
      */
     @Override
     public void start() {
+
+//        left.setPosition(0);
+//        right.setPosition(0);
         runtime.reset();
     }
+
 
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -105,22 +111,34 @@ public class mech_test extends OpMode
         // Setup a variable for each drive wheel to save power level for telemetry
 
         // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
+//        // Comment out the method that's not used.  The default below is POV.
+//
+//        // POV Mode uses left stick to go forward, and right stick to turn.
+//        // - This uses basic math to combine motions and is easier to drive straight.
+//        double liftPower = gamepad1.left_stick_y;
+//        liftPower   = Range.clip(liftPower , -1.0, 1.0) ;
+//
+//        if (gamepad1.right_bumper)
+//            clawOffset += CLAW_SPEED;
+//        else if (gamepad1.left_bumper)
+//            clawOffset -= CLAW_SPEED;
+//
+//        // Move both servos to new position.  Assume servos are mirror image of each other.
+//        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        double liftPower = gamepad1.left_stick_y;
-        liftPower   = Range.clip(liftPower , -1.0, 1.0) ;
+           left.setPosition(gamepad1.left_stick_y); //+ clawOffset);
+         right.setPosition(gamepad1.right_stick_y);
+            //- clawOffset);
 
-        if (gamepad1.right_bumper)
-            clawOffset += CLAW_SPEED;
-        else if (gamepad1.left_bumper)
-            clawOffset -= CLAW_SPEED;
-
-        // Move both servos to new position.  Assume servos are mirror image of each other.
-        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
-        left.setPosition(.5 + clawOffset);
-        right.setPosition(.5 - clawOffset);
+//       while(gamepad1.left_bumper){
+//           left.setPosition(0);
+//       }
+//       while(gamepad1.right_bumper){
+//           right.setPosition(1);
+//       }
+//       while(gamepad2.left_bumper){
+//           left.setPosition(1);
+//       }
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -128,11 +146,11 @@ public class mech_test extends OpMode
         // rightPower = -gamepad1.right_stick_y ;
 
         // Send calculated power to wheels
-        lift.setPower(liftPower);
-
-        // Show the elapsed game time and wheel power.
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("claw", "servo pos" + clawOffset);
+//        lift.setPower(liftPower);
+//
+//        // Show the elapsed game time and wheel power.
+//        telemetry.addData("Status", "Run Time: " + runtime.toString());
+//        telemetry.addData("claw", "servo pos" + clawOffset);
 
     }
 

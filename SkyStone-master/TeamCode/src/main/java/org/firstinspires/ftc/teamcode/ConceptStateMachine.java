@@ -53,6 +53,10 @@ public class ConceptStateMachine extends OpMode
 
     timeState miniDrive;
 
+    timeState miniDrive2;
+
+    ClaspState grabbyGrab;
+
     GyroTurnCCWByPID turnRightAngle;
 
     @Override
@@ -64,7 +68,7 @@ public class ConceptStateMachine extends OpMode
 
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
-        //clasp = hardwareMap.servo.get("clasp");
+        clasp = hardwareMap.servo.get("clasp");
 
 
 
@@ -98,15 +102,19 @@ public class ConceptStateMachine extends OpMode
 
 
         //State Declarations
-        miniDrive = new timeState(.5, .5, motors, "forward");
+        miniDrive = new timeState(2, .5, motors, "forward");
+        miniDrive2 = new timeState(2, .5, motors, "backward");
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .15, "forward");
         //Turn90 = new GyroTurnCWByPID(270, 5, motors, imu);
         turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
+        grabbyGrab = new ClaspState(motors, clasp, 2);
 
         //Setting up the order
-        miniDrive.setNextState(turnRightAngle);
+        miniDrive.setNextState(miniDrive2);
+        miniDrive2.setNextState(turnRightAngle);
         turnRightAngle.setNextState(parkUnderBridge2);
         parkUnderBridge2.setNextState(null);
+        grabbyGrab.setNextState(null);
 
 
 
@@ -124,6 +132,9 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void loop()  {
+        if (machine.currentState()==miniDrive2){
+            clasp.setPosition(0);
+        }
 
         //telemetry.addData("correction", Testy.getTelemetry());
        // telemetry.addData("color", parkUnderBridge.getColor());
