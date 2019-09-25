@@ -55,9 +55,15 @@ public class ConceptStateMachine extends OpMode
 
     timeState miniDrive2;
 
+    ClaspState justClasp;
+
     ClaspState grabbyGrab;
 
     GyroTurnCCWByPID turnRightAngle;
+
+    driveState moveOnce;
+
+
 
     @Override
     public void init() {
@@ -102,19 +108,26 @@ public class ConceptStateMachine extends OpMode
 
 
         //State Declarations
-        miniDrive = new timeState(2, .5, motors, "forward");
-        miniDrive2 = new timeState(2, .5, motors, "backward");
+       miniDrive = new timeState(5, .5, motors, "forward");
+        //miniDrive2 = new timeState(2, .5, motors, "backward");
+
+        moveOnce = new driveState(30, .5, motors, "forwards");
+
+        justClasp = new ClaspState(motors, clasp, 2, "forward", 0, .4);
+        grabbyGrab = new ClaspState(motors, clasp, 5, "backward", .5, .4);
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .15, "forward");
         //Turn90 = new GyroTurnCWByPID(270, 5, motors, imu);
         turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
-        grabbyGrab = new ClaspState(motors, clasp, 2);
+       // grabbyGrab = new ClaspState(motors, clasp, 2);
 
         //Setting up the order
-        miniDrive.setNextState(miniDrive2);
-        miniDrive2.setNextState(turnRightAngle);
+        miniDrive.setNextState(justClasp);
+        moveOnce.setNextState(justClasp);
+        justClasp.setNextState(grabbyGrab);
+        grabbyGrab.setNextState(null);
         turnRightAngle.setNextState(parkUnderBridge2);
         parkUnderBridge2.setNextState(null);
-        grabbyGrab.setNextState(null);
+        //grabbyGrab.setNextState(null);
 
 
 
@@ -125,16 +138,14 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(miniDrive);
+        machine = new StateMachine(moveOnce);
 
     }
 
 
     @Override
     public void loop()  {
-        if (machine.currentState()==miniDrive2){
-            clasp.setPosition(0);
-        }
+
 
         //telemetry.addData("correction", Testy.getTelemetry());
        // telemetry.addData("color", parkUnderBridge.getColor());

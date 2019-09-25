@@ -37,14 +37,21 @@ public class ClaspState implements StateMachine.State {
     State NextState;
     ElapsedTime mRuntime = new ElapsedTime();
     Double time;
+    double Power;
+    String Movement;
+    double pos;
     // private StateMachine.State NextState;
-    public ClaspState(ArrayList<DcMotor> motor, Servo clasp, double sec){
+    public ClaspState(ArrayList<DcMotor> motor, Servo clasp, double sec, String move, double power, double position){
         leftFront = motor.get(0);
         rightFront = motor.get(1);
         leftBack = motor.get(2);
         rightBack = motor.get(3);
         arm = clasp;
         time = sec;
+        mRuntime.reset();
+        Power = power;
+        Movement = move;
+        pos = position;
     }
     @Override
     public void start() {
@@ -53,15 +60,55 @@ public class ClaspState implements StateMachine.State {
 
     @Override
     public State update() {
-        while (mRuntime.seconds() < time) {
-            arm.setPosition(0);
-        }
+
 //        if(arm.getPosition() == 0)
 //            arm.setPosition(1);
 //        else
+        while (mRuntime.seconds() < time) {
+
+            arm.setPosition(pos);
+            if (Movement == "forward") { //for some reason == worked
+                leftFront.setPower(Power);
+                rightFront.setPower(Power);
+                leftBack.setPower(Power);
+                rightBack.setPower(Power);
+            }
+            if (Movement == "backward") {
+                //on = true;
+                leftFront.setPower(-Power);
+                rightFront.setPower(-Power);
+                leftBack.setPower(-Power);
+                rightBack.setPower(-Power);
+            }
+            if (Movement == "turnLeft") {
+                leftFront.setPower(-Power);
+                rightFront.setPower(Power);
+                leftBack.setPower(-Power);
+                rightBack.setPower(Power);
+
+            }
+            if (Movement == "turnRight") {
+                leftFront.setPower(Power);
+                rightFront.setPower(-Power);
+                leftBack.setPower(Power);
+                rightBack.setPower(-Power);
+
+            }
+            return this;
+        }
+        if(time<=mRuntime.seconds()){
+            //on = false;
+            leftFront.setPower(0);
+            rightFront.setPower(0);
+            leftBack.setPower(0);
+            rightBack.setPower(0);
+            // return NextState;
+        }
 
 
-      return NextState;
+        return NextState;
+
+
 
     }
 

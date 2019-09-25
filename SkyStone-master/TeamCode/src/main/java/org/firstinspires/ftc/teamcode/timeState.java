@@ -19,6 +19,7 @@ public class timeState implements StateMachine.State {
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
+    boolean on = false;
 
     private double Power;
     private String Movement;
@@ -65,6 +66,7 @@ public class timeState implements StateMachine.State {
                 rightBack.setPower(Power);
             }
             if (Movement == "backward") {
+                on = true;
                 leftFront.setPower(-Power);
                 rightFront.setPower(-Power);
                 leftBack.setPower(-Power);
@@ -87,6 +89,7 @@ public class timeState implements StateMachine.State {
             return this;
         }
         if(Time<=mRuntime.seconds()){
+            on = false;
             leftFront.setPower(0);
             rightFront.setPower(0);
             leftBack.setPower(0);
@@ -94,9 +97,12 @@ public class timeState implements StateMachine.State {
             // return NextState;
         }
 
-
+        //on = false;
 
         return NextState;
+    }
+    public boolean getOn(){
+        return on;
     }
 }
 

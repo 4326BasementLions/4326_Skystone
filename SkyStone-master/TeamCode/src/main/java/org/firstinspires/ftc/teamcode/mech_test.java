@@ -57,7 +57,7 @@ public class        mech_test extends OpMode
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor lift = null;
-    private Servo left = null;
+    private Servo left ;
     private Servo right = null;
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;
@@ -73,7 +73,7 @@ public class        mech_test extends OpMode
         // step (using the FTC Robot Controller app on the phone).
       //  lift  = hardwareMap.get(DcMotor.class, "lift");
         left = hardwareMap.get(Servo.class, "left");
-        right = hardwareMap.get(Servo.class, "right");
+       // right = hardwareMap.get(Servo.class, "right");
 
 
 
@@ -81,7 +81,7 @@ public class        mech_test extends OpMode
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
         telemetry.addData("leftpos", left.getPosition());
-        telemetry.addData("rightpos", right.getPosition());
+        //telemetry.addData("rightpos", right.getPosition());
     }
 
     /*
@@ -127,7 +127,7 @@ public class        mech_test extends OpMode
 //        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
 
            left.setPosition(gamepad1.left_stick_y); //+ clawOffset);
-         right.setPosition(gamepad1.right_stick_y);
+        // right.setPosition(gamepad1.right_stick_y);
             //- clawOffset);
 
 //       while(gamepad1.left_bumper){
