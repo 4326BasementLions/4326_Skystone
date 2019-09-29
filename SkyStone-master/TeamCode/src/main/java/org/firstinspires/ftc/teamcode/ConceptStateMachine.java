@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="State Machine Test 2.05", group="Iterative Opmode")
+@Autonomous(name="State Machine Test 2.06", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
 //test comment!
@@ -38,6 +38,14 @@ public class ConceptStateMachine extends OpMode
     Servo clasp;
 
     ColorSensor colorSensor;
+
+
+    //MattBran mech materials
+    DcMotor pulley;
+
+    Servo leftHand;
+
+    Servo rightHand;
 
     public timeState Test;// new timeState(2,5, motors, "forward");;
     DriveAvoidPIDState Testy;
@@ -55,13 +63,17 @@ public class ConceptStateMachine extends OpMode
 
     timeState miniDrive2;
 
-    ClaspState justClasp;
+    OnlyClaspState justClasp;
+    OnlyClaspState blockClasp;
 
     ClaspState grabbyGrab;
 
     GyroTurnCCWByPID turnRightAngle;
 
     driveState moveOnce;
+
+
+
 
 
 
@@ -75,6 +87,11 @@ public class ConceptStateMachine extends OpMode
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
         clasp = hardwareMap.servo.get("clasp");
+
+        //leftHand = hardwareMap.servo.get("leftHand");
+        //rightHand = hardwareMap.servo.get("rightHand");
+
+        //pulley = hardwareMap.dcMotor.get("pulley");
 
 
 
@@ -113,20 +130,24 @@ public class ConceptStateMachine extends OpMode
 
         moveOnce = new driveState(30, .5, motors, "forwards");
 
-        justClasp = new ClaspState(motors, clasp, 2, "forward", 0, .4);
-        grabbyGrab = new ClaspState(motors, clasp, 5, "backward", .5, .4);
+       // justClasp = new ClaspState(motors, clasp, 5, "forward", 0, 1);
+        justClasp = new OnlyClaspState(motors, clasp, 2,  1);
+        blockClasp = new OnlyClaspState(motors, clasp, 2,  .8);
+
+        grabbyGrab = new ClaspState(motors, clasp, 5, "backward", 1, 1);
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .15, "forward");
         //Turn90 = new GyroTurnCWByPID(270, 5, motors, imu);
         turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
        // grabbyGrab = new ClaspState(motors, clasp, 2);
 
         //Setting up the order
-        miniDrive.setNextState(justClasp);
+       // miniDrive.setNextState(justClasp);
         moveOnce.setNextState(justClasp);
         justClasp.setNextState(grabbyGrab);
         grabbyGrab.setNextState(null);
-        turnRightAngle.setNextState(parkUnderBridge2);
-        parkUnderBridge2.setNextState(null);
+        blockClasp.setNextState(miniDrive);
+        //turnRightAngle.setNextState(parkUnderBridge2);
+        //parkUnderBridge2.setNextState(null);
         //grabbyGrab.setNextState(null);
 
 
@@ -138,7 +159,7 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(moveOnce);
+        machine = new StateMachine(blockClasp);
 
     }
 

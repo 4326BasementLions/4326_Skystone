@@ -61,6 +61,15 @@ public class        mech_test extends OpMode
     private Servo right = null;
     double          clawOffset  = 0.0 ;                  // Servo mid position
     final double    CLAW_SPEED  = 0.02 ;
+
+
+    DcMotor pulley;
+
+    Servo leftHand;
+
+    Servo rightHand;
+
+
     /*
      * Code to run ONCE when the driver hits INIT
      */
@@ -72,7 +81,7 @@ public class        mech_test extends OpMode
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
       //  lift  = hardwareMap.get(DcMotor.class, "lift");
-        left = hardwareMap.get(Servo.class, "left");
+    //    left = hardwareMap.get(Servo.class, "left");
        // right = hardwareMap.get(Servo.class, "right");
 
 
@@ -80,7 +89,13 @@ public class        mech_test extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("leftpos", left.getPosition());
+      //  telemetry.addData("leftpos", left.getPosition());
+
+
+        leftHand = hardwareMap.servo.get("leftHand");
+        rightHand = hardwareMap.servo.get("rightHand");
+
+        pulley = hardwareMap.dcMotor.get("pulley");
         //telemetry.addData("rightpos", right.getPosition());
     }
 
@@ -108,6 +123,28 @@ public class        mech_test extends OpMode
      */
     @Override
     public void loop() {
+
+        pulley.setPower(gamepad1.right_stick_y);
+
+        leftHand.setPosition(gamepad1.right_stick_x);
+        rightHand.setPosition(-gamepad1.right_stick_x);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         // Setup a variable for each drive wheel to save power level for telemetry
 
         // Choose to drive using either Tank Mode, or POV Mode
@@ -126,7 +163,11 @@ public class        mech_test extends OpMode
 //        // Move both servos to new position.  Assume servos are mirror image of each other.
 //        clawOffset = Range.clip(clawOffset, -0.5, 0.5);
 
-           left.setPosition(gamepad1.left_stick_y); //+ clawOffset);
+//*****
+           //left.setPosition(gamepad1.left_stick_y); //+ clawOffset);
+
+        //*****
+
         // right.setPosition(gamepad1.right_stick_y);
             //- clawOffset);
 

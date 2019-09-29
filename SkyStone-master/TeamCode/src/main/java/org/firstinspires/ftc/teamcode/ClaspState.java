@@ -55,6 +55,7 @@ public class ClaspState implements StateMachine.State {
     }
     @Override
     public void start() {
+        mRuntime.reset();
 
     }
 
@@ -66,8 +67,10 @@ public class ClaspState implements StateMachine.State {
 //        else
         while (mRuntime.seconds() < time) {
 
-            arm.setPosition(pos);
-            if (Movement == "forward") { //for some reason == worked
+//            arm.setPosition(pos);
+            if (Movement == "forward") {
+                //arm.setPosition(pos);
+                    //for some reason == worked
                 leftFront.setPower(Power);
                 rightFront.setPower(Power);
                 leftBack.setPower(Power);
@@ -75,6 +78,8 @@ public class ClaspState implements StateMachine.State {
             }
             if (Movement == "backward") {
                 //on = true;
+                //arm.setPosition(pos);
+
                 leftFront.setPower(-Power);
                 rightFront.setPower(-Power);
                 leftBack.setPower(-Power);
@@ -94,6 +99,7 @@ public class ClaspState implements StateMachine.State {
                 rightBack.setPower(-Power);
 
             }
+         //   arm.setPosition(pos);
             return this;
         }
         if(time<=mRuntime.seconds()){

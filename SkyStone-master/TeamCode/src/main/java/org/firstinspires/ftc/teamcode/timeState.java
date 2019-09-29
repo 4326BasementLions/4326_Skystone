@@ -50,6 +50,7 @@ public class timeState implements StateMachine.State {
     @Override
     public void start() {
           //  this.update();
+        mRuntime.reset();
 
 
     }
