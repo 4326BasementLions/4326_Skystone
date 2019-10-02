@@ -125,34 +125,32 @@ public class ConceptStateMachine extends OpMode
         rightBack.setPower(0);
         leftBack.setPower(0);
 
-
         //State Declarations
-       miniDrive = new timeState(5, .5, motors, "forward");
-        //miniDrive2 = new timeState(2, .5, motors, "backward");
+        miniDrive = new timeState(5, .5, motors, "forward");
 
         moveOnce = new driveState(30, .5, motors, "forwards");
 
-       // justClasp = new ClaspState(motors, clasp, 5, "forward", 0, 1);
         justClasp = new OnlyClaspState(motors, clasp, 2,  1);
+
         blockClasp = new OnlyClaspState(motors, clasp, 2,  .8);
 
         grabbyGrab = new ClaspState(motors, clasp, 5, "backward", 1, 1);
+
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .15, "forward");
-        //Turn90 = new GyroTurnCWByPID(270, 5, motors, imu);
+
         turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
-       // grabbyGrab = new ClaspState(motors, clasp, 2);
 
 
         hugyuu = new HugState(motors, 1, leftHand, rightHand,.5);
+
+
+
         //Setting up the order
-       // miniDrive.setNextState(justClasp);
-        moveOnce.setNextState(justClasp);
+        blockClasp.setNextState(miniDrive);
+        miniDrive.setNextState(justClasp);
         justClasp.setNextState(grabbyGrab);
         grabbyGrab.setNextState(null);
-        blockClasp.setNextState(miniDrive);
-        //turnRightAngle.setNextState(parkUnderBridge2);
-        //parkUnderBridge2.setNextState(null);
-        //grabbyGrab.setNextState(null);
+
 
 
 
@@ -171,9 +169,6 @@ public class ConceptStateMachine extends OpMode
     @Override
     public void loop()  {
 
-
-        //telemetry.addData("correction", Testy.getTelemetry());
-       // telemetry.addData("color", parkUnderBridge.getColor());
 
         telemetry.addData("redVal", parkUnderBridge2.getColor());
 
