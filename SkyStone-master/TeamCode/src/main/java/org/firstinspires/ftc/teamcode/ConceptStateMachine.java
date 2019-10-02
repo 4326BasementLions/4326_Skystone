@@ -72,6 +72,8 @@ public class ConceptStateMachine extends OpMode
 
     driveState moveOnce;
 
+    HugState hugyuu;
+
 
 
 
@@ -140,6 +142,8 @@ public class ConceptStateMachine extends OpMode
         turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
        // grabbyGrab = new ClaspState(motors, clasp, 2);
 
+
+        hugyuu = new HugState(motors, 1, leftHand, rightHand,.5);
         //Setting up the order
        // miniDrive.setNextState(justClasp);
         moveOnce.setNextState(justClasp);

@@ -29,13 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -51,8 +49,8 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="mechtesting", group="Iterative Opmode")
-public class        mech_test extends OpMode
+@TeleOp(name="mechtestingHug", group="Iterative Opmode")
+public class hug_test extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -92,8 +90,8 @@ public class        mech_test extends OpMode
       //  telemetry.addData("leftpos", left.getPosition());
 
 
-        leftHand = hardwareMap.servo.get("left");
-        //rightHand = hardwareMap.servo.get("rightHand");
+        leftHand = hardwareMap.servo.get("leftHand");
+        rightHand = hardwareMap.servo.get("rightHand");
 
         pulley = hardwareMap.dcMotor.get("pulley");
         //telemetry.addData("rightpos", right.getPosition());
@@ -125,9 +123,16 @@ public class        mech_test extends OpMode
     public void loop() {
 
         pulley.setPower(gamepad1.right_stick_y);
+        if(gamepad1.right_bumper){
+        leftHand.setPosition(0);
+        rightHand.setPosition(1);}
+        if (gamepad1.left_bumper){
+            leftHand.setPosition(1);
+            rightHand.setPosition(0);
+        }
 
-        leftHand.setPosition(gamepad1.left_stick_y);
-       // rightHand.setPosition(-gamepad1.right_stick_x);
+
+
 
 
 
