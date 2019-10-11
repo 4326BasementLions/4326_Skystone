@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="State Machine Test 2.06", group="Iterative Opmode")
+@Autonomous(name="State Machine Test 2.3", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
 //test comment!
@@ -59,12 +59,18 @@ public class ConceptStateMachine extends OpMode
     colorMoveState parkUnderBridge;
     ColorSenseStopState parkUnderBridge2;
 
-    timeState miniDrive;
+    driveState driveToFoundation;
+    driveState straighten;
+    driveState getOffWall;
+
+    timeState driveBack;
 
     timeState miniDrive2;
 
     OnlyClaspState justClasp;
     OnlyClaspState blockClasp;
+    OnlyClaspState releaseClasp;
+
 
     ClaspState grabbyGrab;
 
@@ -72,11 +78,17 @@ public class ConceptStateMachine extends OpMode
 
     driveState moveOnce;
 
-    HugState hugyuu;
+    driveState dragFoundationIn;
 
 
+    driveState approachBlocks;
 
+     GyroTurnCCWByPID turnBlock;
 
+     OnlyClaspState grabBlock;
+
+     driveState strafeToBlock;
+    driveState getOffBlock;
 
 
     @Override
@@ -126,30 +138,63 @@ public class ConceptStateMachine extends OpMode
         leftBack.setPower(0);
 
         //State Declarations
-        miniDrive = new timeState(5, .5, motors, "forward");
+        driveToFoundation = new driveState(45, .4, motors, "forward");
 
         moveOnce = new driveState(30, .5, motors, "forwards");
 
-        justClasp = new OnlyClaspState(motors, clasp, 2,  1);
+        justClasp = new OnlyClaspState( clasp, 2,  1);
 
-        blockClasp = new OnlyClaspState(motors, clasp, 2,  .8);
+        blockClasp = new OnlyClaspState( clasp, 2,  .8);
 
         grabbyGrab = new ClaspState(motors, clasp, 5, "backward", 1, 1);
 
-        parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .15, "forward");
+        parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "forward");
 
         turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
+        driveBack = new timeState(5, .5, motors, "backward");
+
+        releaseClasp = new OnlyClaspState( clasp, 2, 0 );
+        straighten = new driveState(5,.5, motors, "right");
+        getOffWall = new driveState(2, .5 , motors, "left");
+        dragFoundationIn = new driveState(5, .5 , motors, "right");
 
 
-        hugyuu = new HugState(motors, 1, leftHand, rightHand,.5);
+        //GET BLOCKS
+
+        approachBlocks = new driveState(16.25,.5,motors,"forward");
+
+        turnBlock = new GyroTurnCCWByPID(90,.5,motors,imu);
+
+        strafeToBlock = new driveState(4,.5,motors, "left");
+
+        grabBlock = new OnlyClaspState(clasp,1,1);
+
+        getOffBlock = new driveState(2, .5 , motors, "left");
+
+
+
+
+
+
+
+
 
 
 
         //Setting up the order
-        blockClasp.setNextState(miniDrive);
-        miniDrive.setNextState(justClasp);
-        justClasp.setNextState(grabbyGrab);
-        grabbyGrab.setNextState(null);
+//        driveToFoundation.setNextState(blockClasp);
+//        blockClasp.setNextState(driveBack);
+//        driveBack.setNextState(dragFoundationIn);
+//        dragFoundationIn.setNextState(releaseClasp);
+//        releaseClasp.setNextState(straighten);
+//        straighten.setNextState(getOffWall);
+//        getOffWall.setNextState(parkUnderBridge2);
+
+        approachBlocks.setNextState(turnBlock);
+        turnBlock.setNextState(strafeToBlock);
+        strafeToBlock.setNextState(grabBlock);
+        grabBlock.setNextState(getOffBlock);
+        getOffWall.setNextState(null);
 
 
 
@@ -161,7 +206,7 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(blockClasp);
+        machine = new StateMachine(approachBlocks);
 
     }
 
@@ -170,7 +215,8 @@ public class ConceptStateMachine extends OpMode
     public void loop()  {
 
 
-        telemetry.addData("redVal", parkUnderBridge2.getColor());
+        telemetry.addData("state", machine.currentState());
+        telemetry.addData("state", machine.currentState());
 
         telemetry.update();
          machine.update();

@@ -92,8 +92,8 @@ public class        mech_test extends OpMode
       //  telemetry.addData("leftpos", left.getPosition());
 
 
-        leftHand = hardwareMap.servo.get("left");
-        //rightHand = hardwareMap.servo.get("rightHand");
+        leftHand = hardwareMap.servo.get("turn");
+        rightHand = hardwareMap.servo.get("smol");
 
         pulley = hardwareMap.dcMotor.get("pulley");
         //telemetry.addData("rightpos", right.getPosition());
@@ -114,6 +114,7 @@ public class        mech_test extends OpMode
 
 //        left.setPosition(0);
 //        right.setPosition(0);
+        leftHand.setPosition(0.5);
         runtime.reset();
     }
 
@@ -125,8 +126,23 @@ public class        mech_test extends OpMode
     public void loop() {
 
         pulley.setPower(gamepad1.right_stick_y);
+        if(gamepad1.x) {
+            leftHand.setPosition(0.5);
 
-        leftHand.setPosition(gamepad1.left_stick_y);
+        }
+        if(gamepad1.left_bumper){
+            leftHand.setPosition(leftHand.getPosition()+.1);
+        }
+        if(gamepad1.right_bumper){
+            leftHand.setPosition(leftHand.getPosition()-.1);
+        }
+        if(gamepad1.a){
+            rightHand.setPosition(rightHand.getPosition()+.1);
+        }
+        if(gamepad1.b){
+            rightHand.setPosition(rightHand.getPosition()-.1);
+        }
+
        // rightHand.setPosition(-gamepad1.right_stick_x);
 
 

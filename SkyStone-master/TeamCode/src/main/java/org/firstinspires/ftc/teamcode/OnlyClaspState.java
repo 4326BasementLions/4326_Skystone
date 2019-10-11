@@ -22,11 +22,8 @@ public class OnlyClaspState implements State {
     String Movement;
     double pos;
     // private StateMachine.State NextState;
-    public OnlyClaspState(ArrayList<DcMotor> motor, Servo clasp, double sec, double position){
-        leftFront = motor.get(0);
-        rightFront = motor.get(1);
-        leftBack = motor.get(2);
-        rightBack = motor.get(3);
+    public OnlyClaspState( Servo clasp, double sec, double position){
+
         arm = clasp;
         time = sec;
         mRuntime.reset();

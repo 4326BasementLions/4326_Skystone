@@ -122,13 +122,16 @@ public class hug_test extends OpMode
     @Override
     public void loop() {
 
-        pulley.setPower(gamepad1.right_stick_y);
+        pulley.setPower(gamepad1.right_stick_y/2);
+
         if(gamepad1.right_bumper){
         leftHand.setPosition(0);
-        rightHand.setPosition(1);}
+        rightHand.setPosition(1);
+        }
+
         if (gamepad1.left_bumper){
-            leftHand.setPosition(1);
-            rightHand.setPosition(0);
+            leftHand.setPosition(.4);
+            rightHand.setPosition(.6);
         }
 
 
