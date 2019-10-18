@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="State Machine Test 2.3", group="Iterative Opmode")
+@Autonomous(name="State Machine Test 2.3.1", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
 //test comment!

@@ -72,7 +72,7 @@ public class        mech_test extends OpMode
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
-
+    double x = .5;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -96,17 +96,19 @@ public class        mech_test extends OpMode
       //  telemetry.addData("leftpos", left.getPosition());
 
 
-        leftHand = hardwareMap.servo.get("left");
-        rightHand = hardwareMap.servo.get("right");
+        leftHand = hardwareMap.servo.get("smol");
+        rightHand = hardwareMap.servo.get("turn");
 
         pulley = hardwareMap.dcMotor.get("pulley");
+
+
         //telemetry.addData("rightpos", right.getPosition());
-        rightFront = hardwareMap.dcMotor.get("right front");
-        leftFront = hardwareMap.dcMotor.get("left front");
-        rightBack = hardwareMap.dcMotor.get("right back");
-        leftBack = hardwareMap.dcMotor.get("left back");
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+//        rightFront = hardwareMap.dcMotor.get("right front");
+//        leftFront = hardwareMap.dcMotor.get("left front");
+//        rightBack = hardwareMap.dcMotor.get("right back");
+//        leftBack = hardwareMap.dcMotor.get("left back");
+//        rightFront.setDirection(DcMotor.Direction.REVERSE);
+//        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
     }
 
@@ -138,11 +140,14 @@ public class        mech_test extends OpMode
 
         pulley.setPower(gamepad2.right_stick_y);
 
+        leftHand.setPosition(x);
         if(gamepad2.left_bumper){
-            leftHand.setPosition(leftHand.getPosition()+.1);
+//        Unfortunately, using .getPos within the .setPos method lead to an infinite loop, as .getPos would constantly update
+            x+=.1;
         }
         if(gamepad2.right_bumper){
-            leftHand.setPosition(leftHand.getPosition()-.1);
+//
+            x-=.1;
         }
         if(gamepad2.a){
             rightHand.setPosition(rightHand.getPosition()+.1);
@@ -150,19 +155,22 @@ public class        mech_test extends OpMode
         if(gamepad2.b){
             rightHand.setPosition(rightHand.getPosition()-.1);
         }
-        float drive = gamepad1.right_stick_y;
-        float strafe = gamepad1.right_stick_x;
-        float turn = gamepad1.left_stick_x;
+//        float drive = gamepad1.right_stick_y;
+//        float strafe = gamepad1.right_stick_x;
+//        float turn = gamepad1.left_stick_x;
+//
+//        float fl = drive - strafe + turn;
+//        float fr = drive + strafe - turn;
+//        float bl = drive + strafe + turn;
+//        float br = drive - strafe - turn;
+//
+//        leftFront.setPower(fl);
+//        rightFront.setPower(fr);
+//        leftBack.setPower(bl);
+//        rightBack.setPower(br);
 
-        float fl = drive - strafe + turn;
-        float fr = drive + strafe - turn;
-        float bl = drive + strafe + turn;
-        float br = drive - strafe - turn;
 
-        leftFront.setPower(fl);
-        rightFront.setPower(fr);
-        leftBack.setPower(bl);
-        rightBack.setPower(br);
+        //pulley.setPower(gamepad2.left_stick_y);
 
        // rightHand.setPosition(-gamepad1.right_stick_x);
 
