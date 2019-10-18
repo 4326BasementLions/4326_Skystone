@@ -51,7 +51,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="mechtesting", group="Iterative Opmode")
+@TeleOp(name="mechtesting_1", group="Iterative Opmode")
 public class        mech_test extends OpMode
 {
     // Declare OpMode members.
@@ -68,6 +68,10 @@ public class        mech_test extends OpMode
     Servo leftHand;
 
     Servo rightHand;
+    DcMotor leftFront;
+    DcMotor rightFront;
+    DcMotor leftBack;
+    DcMotor rightBack;
 
 
     /*
@@ -92,11 +96,18 @@ public class        mech_test extends OpMode
       //  telemetry.addData("leftpos", left.getPosition());
 
 
-        leftHand = hardwareMap.servo.get("turn");
-        rightHand = hardwareMap.servo.get("smol");
+        leftHand = hardwareMap.servo.get("left");
+        rightHand = hardwareMap.servo.get("right");
 
         pulley = hardwareMap.dcMotor.get("pulley");
         //telemetry.addData("rightpos", right.getPosition());
+        rightFront = hardwareMap.dcMotor.get("right front");
+        leftFront = hardwareMap.dcMotor.get("left front");
+        rightBack = hardwareMap.dcMotor.get("right back");
+        leftBack = hardwareMap.dcMotor.get("left back");
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
+
     }
 
     /*
@@ -114,7 +125,7 @@ public class        mech_test extends OpMode
 
 //        left.setPosition(0);
 //        right.setPosition(0);
-        leftHand.setPosition(0.5);
+
         runtime.reset();
     }
 
@@ -125,31 +136,35 @@ public class        mech_test extends OpMode
     @Override
     public void loop() {
 
-        pulley.setPower(gamepad1.right_stick_y);
-        if(gamepad1.x) {
-            leftHand.setPosition(0.5);
+        pulley.setPower(gamepad2.right_stick_y);
 
-        }
-        if(gamepad1.left_bumper){
+        if(gamepad2.left_bumper){
             leftHand.setPosition(leftHand.getPosition()+.1);
         }
-        if(gamepad1.right_bumper){
+        if(gamepad2.right_bumper){
             leftHand.setPosition(leftHand.getPosition()-.1);
         }
-        if(gamepad1.a){
+        if(gamepad2.a){
             rightHand.setPosition(rightHand.getPosition()+.1);
         }
-        if(gamepad1.b){
+        if(gamepad2.b){
             rightHand.setPosition(rightHand.getPosition()-.1);
         }
+        float drive = gamepad1.right_stick_y;
+        float strafe = gamepad1.right_stick_x;
+        float turn = gamepad1.left_stick_x;
+
+        float fl = drive - strafe + turn;
+        float fr = drive + strafe - turn;
+        float bl = drive + strafe + turn;
+        float br = drive - strafe - turn;
+
+        leftFront.setPower(fl);
+        rightFront.setPower(fr);
+        leftBack.setPower(bl);
+        rightBack.setPower(br);
 
        // rightHand.setPosition(-gamepad1.right_stick_x);
-
-
-
-
-
-
 
 
 
