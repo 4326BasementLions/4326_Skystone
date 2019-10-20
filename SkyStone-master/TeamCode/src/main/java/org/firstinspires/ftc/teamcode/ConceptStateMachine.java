@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="State Machine Test 2.3.1", group="Iterative Opmode")
+@Autonomous(name="State Machine Test 2.4.5", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
-//test comment!
+//test comment!ahs
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftBack;
@@ -51,7 +51,7 @@ public class ConceptStateMachine extends OpMode
     DriveAvoidPIDState Testy;
 
     GyroTurnCWByPID Turn90;
-
+    adjustPulleyState adjustPulley;
 
     BNO055IMU imu;
 
@@ -67,16 +67,13 @@ public class ConceptStateMachine extends OpMode
 
     timeState miniDrive2;
 
-    OnlyClaspState justClasp;
-    OnlyClaspState blockClasp;
+    OnlyClaspState foundationClasp;
     OnlyClaspState releaseClasp;
 
 
-    ClaspState grabbyGrab;
 
     GyroTurnCCWByPID turnRightAngle;
 
-    driveState moveOnce;
 
     driveState dragFoundationIn;
 
@@ -91,6 +88,9 @@ public class ConceptStateMachine extends OpMode
     driveState getOffBlock;
 
 
+
+
+
     @Override
     public void init() {
         rightFront = hardwareMap.dcMotor.get("right front");
@@ -102,10 +102,10 @@ public class ConceptStateMachine extends OpMode
 
         clasp = hardwareMap.servo.get("clasp");
 
-        //leftHand = hardwareMap.servo.get("leftHand");
-        //rightHand = hardwareMap.servo.get("rightHand");
+        leftHand = hardwareMap.servo.get("left");
+        rightHand = hardwareMap.servo.get("right");
 
-        //pulley = hardwareMap.dcMotor.get("pulley");
+        pulley = hardwareMap.dcMotor.get("pulley");
 
 
 
@@ -118,6 +118,7 @@ public class ConceptStateMachine extends OpMode
         motors.add(leftFront);
         motors.add(rightBack);
         motors.add(leftBack);
+        motors.add(pulley);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -140,13 +141,10 @@ public class ConceptStateMachine extends OpMode
         //State Declarations
         driveToFoundation = new driveState(45, .4, motors, "forward");
 
-        moveOnce = new driveState(30, .5, motors, "forwards");
+        adjustPulley = new adjustPulleyState(.2,.5 ,motors, rightHand, leftHand );
 
-        justClasp = new OnlyClaspState( clasp, 2,  1);
+        foundationClasp = new OnlyClaspState( clasp, 2,  .8);
 
-        blockClasp = new OnlyClaspState( clasp, 2,  .8);
-
-        grabbyGrab = new ClaspState(motors, clasp, 5, "backward", 1, 1);
 
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "forward");
 
@@ -182,19 +180,19 @@ public class ConceptStateMachine extends OpMode
 
 
         //Setting up the order
-//        driveToFoundation.setNextState(blockClasp);
-//        blockClasp.setNextState(driveBack);
+//        driveToFoundation.setNextState(foundationClasp);
+//        foundationClasp.setNextState(driveBack);
 //        driveBack.setNextState(dragFoundationIn);
 //        dragFoundationIn.setNextState(releaseClasp);
 //        releaseClasp.setNextState(straighten);
 //        straighten.setNextState(getOffWall);
 //        getOffWall.setNextState(parkUnderBridge2);
 
-        approachBlocks.setNextState(turnBlock);
-        turnBlock.setNextState(strafeToBlock);
-        strafeToBlock.setNextState(grabBlock);
-        grabBlock.setNextState(getOffBlock);
-        getOffWall.setNextState(null);
+//        approachBlocks.setNextState(turnBlock);
+//        turnBlock.setNextState(strafeToBlock);
+//        strafeToBlock.setNextState(grabBlock);
+//        grabBlock.setNextState(getOffBlock);
+//        getOffWall.setNextState(null);
 
 
 
@@ -206,7 +204,7 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(approachBlocks);
+        machine = new StateMachine(adjustPulley);
 
     }
 
@@ -223,7 +221,7 @@ public class ConceptStateMachine extends OpMode
 
     }
 
-    private StateMachine machine;
+   private StateMachine machine;
 
     @Override
     public void stop() {

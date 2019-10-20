@@ -96,8 +96,8 @@ public class        mech_test extends OpMode
       //  telemetry.addData("leftpos", left.getPosition());
 
 
-        leftHand = hardwareMap.servo.get("smol");
-        rightHand = hardwareMap.servo.get("turn");
+        leftHand = hardwareMap.servo.get("turn");
+        rightHand = hardwareMap.servo.get("smol");
 
         pulley = hardwareMap.dcMotor.get("pulley");
 
