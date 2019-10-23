@@ -147,7 +147,7 @@ public class ConceptStateMachine extends OpMode
 
         adjustPulley = new adjustPulleyState(.2,.5 ,motors, rightHand, leftHand );
 
-        foundationClasp = new OnlyClaspState( clasp, 3,  1.2);
+        foundationClasp = new OnlyClaspState( clasp, 2,  .8);
 
 
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "forward");
