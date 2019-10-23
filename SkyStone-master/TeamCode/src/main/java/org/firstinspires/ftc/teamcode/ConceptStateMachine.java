@@ -26,7 +26,11 @@ import java.util.ArrayList;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@Autonomous(name="State Machine Test 2.4.5", group="Iterative Opmode")
+
+//showing off git
+
+
+@Autonomous(name="State Machine Test 2.5", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
 //test comment!ahs
@@ -143,7 +147,7 @@ public class ConceptStateMachine extends OpMode
 
         adjustPulley = new adjustPulleyState(.2,.5 ,motors, rightHand, leftHand );
 
-        foundationClasp = new OnlyClaspState( clasp, 2,  .8);
+        foundationClasp = new OnlyClaspState( clasp, 3,  1.2);
 
 
         parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "forward");
@@ -180,13 +184,15 @@ public class ConceptStateMachine extends OpMode
 
 
         //Setting up the order
-//        driveToFoundation.setNextState(foundationClasp);
-//        foundationClasp.setNextState(driveBack);
-//        driveBack.setNextState(dragFoundationIn);
-//        dragFoundationIn.setNextState(releaseClasp);
-//        releaseClasp.setNextState(straighten);
-//        straighten.setNextState(getOffWall);
-//        getOffWall.setNextState(parkUnderBridge2);
+        adjustPulley.setNextState(driveToFoundation);
+        driveToFoundation.setNextState(adjustPulley);
+        adjustPulley.setNextState(foundationClasp);
+        foundationClasp.setNextState(driveBack);
+        driveBack.setNextState(dragFoundationIn);
+        dragFoundationIn.setNextState(releaseClasp);
+        releaseClasp.setNextState(straighten);
+        straighten.setNextState(getOffWall);
+        getOffWall.setNextState(parkUnderBridge2);
 
 //        approachBlocks.setNextState(turnBlock);
 //        turnBlock.setNextState(strafeToBlock);
@@ -204,7 +210,7 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(adjustPulley);
+        machine = new StateMachine(driveToFoundation);
 
     }
 
