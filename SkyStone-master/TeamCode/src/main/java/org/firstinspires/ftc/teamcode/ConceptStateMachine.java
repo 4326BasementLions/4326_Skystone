@@ -27,7 +27,7 @@ import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
-//showing off git
+
 
 
 @Autonomous(name="State Machine Test 2.5", group="Iterative Opmode")
