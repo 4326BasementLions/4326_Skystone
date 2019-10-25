@@ -89,7 +89,17 @@ public class ConceptStateMachine extends OpMode
      OnlyClaspState grabBlock;
 
      driveState strafeToBlock;
+
+    //driveState confirmclasp;
     driveState getOffBlock;
+
+
+    OpenClosePulleyState close;
+    OpenClosePulleyState open;
+
+    movePulleyState moveDown;
+    movePulleyState moveUp;
+    ElapsedTime mRuntime = new ElapsedTime();
 
 
 
@@ -143,7 +153,7 @@ public class ConceptStateMachine extends OpMode
         leftBack.setPower(0);
 
         //State Declarations
-        driveToFoundation = new driveState(45, .4, motors, "forward");
+        driveToFoundation = new driveState(50, .4, motors, "forward");
 
         adjustPulley = new adjustPulleyState(.2,.5 ,motors, rightHand, leftHand );
 
@@ -163,15 +173,28 @@ public class ConceptStateMachine extends OpMode
 
         //GET BLOCKS
 
-        approachBlocks = new driveState(16.25,.5,motors,"forward");
+        approachBlocks = new driveState(21,.5,motors,"forward");
 
         turnBlock = new GyroTurnCCWByPID(90,.5,motors,imu);
 
         strafeToBlock = new driveState(4,.5,motors, "left");
+      //  confirmclasp = new driveState(2,.5,motors, "left");
 
         grabBlock = new OnlyClaspState(clasp,1,1);
 
-        getOffBlock = new driveState(2, .5 , motors, "left");
+        getOffBlock = new driveState(2, .5 , motors, "right");
+
+
+        close = new OpenClosePulleyState(motors, rightHand, leftHand, "close");
+
+        open = new OpenClosePulleyState(motors, rightHand, leftHand, "open");
+
+        moveDown = new movePulleyState(1.0, .5, motors, rightHand, leftHand);
+
+        moveUp = new movePulleyState(1.0, -.5, motors, rightHand, leftHand);
+
+
+        //HUGLIFT
 
 
 
@@ -180,25 +203,36 @@ public class ConceptStateMachine extends OpMode
 
 
 
+//open.setNextState(mo);
+moveDown.setNextState(close);
+close.setNextState(moveUp);
+moveUp.setNextState(open);
+open.setNextState(null);
+
+//        //Setting up the order
+//        adjustPulley.setNextState(driveToFoundation);
+//        driveToFoundation.setNextState(adjustPulley);
+//        adjustPulley.setNextState(foundationClasp);
+//       // foundationClasp.setNextState(driveBack);
+//        driveBack.setNextState(dragFoundationIn);
+//        dragFoundationIn.setNextState(releaseClasp);
+//        releaseClasp.setNextState(straighten);
+//        straighten.setNextState(getOffWall);
+//        getOffWall.setNextState(parkUnderBridge2);
+//
+        approachBlocks.setNextState(turnBlock);
+        turnBlock.setNextState(strafeToBlock);
+        strafeToBlock.setNextState(grabBlock);
+        grabBlock.setNextState(getOffBlock);
+        getOffBlock.setNextState(null);
+        //If
 
 
-
-        //Setting up the order
-        adjustPulley.setNextState(driveToFoundation);
-        driveToFoundation.setNextState(adjustPulley);
-        adjustPulley.setNextState(foundationClasp);
-        foundationClasp.setNextState(driveBack);
-        driveBack.setNextState(dragFoundationIn);
-        dragFoundationIn.setNextState(releaseClasp);
-        releaseClasp.setNextState(straighten);
-        straighten.setNextState(getOffWall);
-        getOffWall.setNextState(parkUnderBridge2);
-
-//        approachBlocks.setNextState(turnBlock);
-//        turnBlock.setNextState(strafeToBlock);
-//        strafeToBlock.setNextState(grabBlock);
-//        grabBlock.setNextState(getOffBlock);
-//        getOffWall.setNextState(null);
+        //confirmclasp.setNextState(null);
+////        getOffWall.setNextState(null);
+//        close.setNextState(foundationClasp);
+//
+//        foundationClasp.setNextState(open);
 
 
 
@@ -210,9 +244,17 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void start(){
-        machine = new StateMachine(driveToFoundation);
+        machine = new StateMachine(approachBlocks);
+        if(machine.currentState().equals(grabBlock)){
+//            mRuntime.reset();
+//            if(mRuntim){
+//
+//            }
+            wait(1);
+        }
 
     }
+
 
 
     @Override
@@ -231,4 +273,13 @@ public class ConceptStateMachine extends OpMode
 
     @Override
     public void stop() {
-    }}
+    }
+
+    public void wait(int time) {
+        try {
+            Thread.sleep(time * 100);//milliseconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
