@@ -92,8 +92,8 @@ public class ConceptStateMachine extends OpMode
 
     //driveState confirmclasp;
     driveState getOffBlock;
-
-
+driveState moveBackFromBlock;
+    GyroTurnCCWByPID turnFromBlock;
     OpenClosePulleyState close;
     OpenClosePulleyState open;
 
@@ -178,22 +178,26 @@ public class ConceptStateMachine extends OpMode
 
         //GET BLOCKS
 
-        approachBlocks = new driveState(21,.5,motors,"forward");
+        approachBlocks = new driveState(22,.5,motors,"forward");
 
-        turnBlock = new GyroTurnCCWByPID(77.5,.5,motors,imu); //counterclockwise
+        turnBlock = new GyroTurnCCWByPID(70,.5,motors,imu); //counterclockwise
 
         strafeToBlock = new driveState(4.75,.5,motors, "left");
       //  confirmclasp = new driveState(2,.5,motors, "left");
 
         grabBlock = new OnlyClaspState(clasp,3,1);
 
-        moveALittle = new driveState(6, .5, motors, "left");//added this to move a little
+       reposition = new GyroTurnCWByPID(6.5, 0.5, motors, imu); //clockwise
+        moveALittle = new driveState(5, .5, motors, "left");//added this to move a little
 
-        reposition = new GyroTurnCWByPID(7.5, 0.5, motors, imu); //clockwise
+
 
 
         getOffBlock = new driveState(20, .5 , motors, "right");
 
+turnFromBlock = new GyroTurnCCWByPID(110, .5, motors, imu);
+
+moveBackFromBlock = new driveState(20, .5, motors, "backward");
 
         close = new OpenClosePulleyState(motors, rightHand, leftHand, "close");
 
@@ -233,10 +237,13 @@ open.setNextState(null);
         approachBlocks.setNextState(turnBlock);
         turnBlock.setNextState(strafeToBlock);
         strafeToBlock.setNextState(grabBlock);
-        grabBlock.setNextState(moveALittle);
-        moveALittle.setNextState(reposition);
-        reposition.setNextState(getOffBlock);
-        getOffBlock.setNextState(null);
+        grabBlock.setNextState(reposition);
+       reposition.setNextState(moveALittle);
+        moveALittle.setNextState(getOffBlock);
+        getOffBlock.setNextState(adjustPulley);
+        adjustPulley.setNextState(moveBackFromBlock);
+        moveBackFromBlock.setNextState(null);
+    //    turnFromBlock.setNextState(null);
         //If
 
 
