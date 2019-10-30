@@ -30,7 +30,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 
-@Autonomous(name="State Machine Test 2.5", group="Iterative Opmode")
+@Autonomous(name="State Machine Test 2.76", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
 //test comment!ahs
@@ -99,6 +99,11 @@ public class ConceptStateMachine extends OpMode
 
     movePulleyState moveDown;
     movePulleyState moveUp;
+
+    driveState moveALittle;
+    GyroTurnCWByPID reposition;
+
+
     ElapsedTime mRuntime = new ElapsedTime();
 
 
@@ -175,14 +180,19 @@ public class ConceptStateMachine extends OpMode
 
         approachBlocks = new driveState(21,.5,motors,"forward");
 
-        turnBlock = new GyroTurnCCWByPID(90,.5,motors,imu);
+        turnBlock = new GyroTurnCCWByPID(77.5,.5,motors,imu); //counterclockwise
 
-        strafeToBlock = new driveState(4,.5,motors, "left");
+        strafeToBlock = new driveState(4.75,.5,motors, "left");
       //  confirmclasp = new driveState(2,.5,motors, "left");
 
-        grabBlock = new OnlyClaspState(clasp,1,1);
+        grabBlock = new OnlyClaspState(clasp,3,1);
 
-        getOffBlock = new driveState(2, .5 , motors, "right");
+        moveALittle = new driveState(6, .5, motors, "left");//added this to move a little
+
+        reposition = new GyroTurnCWByPID(7.5, 0.5, motors, imu); //clockwise
+
+
+        getOffBlock = new driveState(20, .5 , motors, "right");
 
 
         close = new OpenClosePulleyState(motors, rightHand, leftHand, "close");
@@ -223,7 +233,9 @@ open.setNextState(null);
         approachBlocks.setNextState(turnBlock);
         turnBlock.setNextState(strafeToBlock);
         strafeToBlock.setNextState(grabBlock);
-        grabBlock.setNextState(getOffBlock);
+        grabBlock.setNextState(moveALittle);
+        moveALittle.setNextState(reposition);
+        reposition.setNextState(getOffBlock);
         getOffBlock.setNextState(null);
         //If
 
@@ -245,12 +257,13 @@ open.setNextState(null);
     @Override
     public void start(){
         machine = new StateMachine(approachBlocks);
-        if(machine.currentState().equals(grabBlock)){
+        while (machine.currentState().equals(grabBlock)){
 //            mRuntime.reset();
 //            if(mRuntim){
 //
 //            }
             wait(1);
+            //break;
         }
 
     }
