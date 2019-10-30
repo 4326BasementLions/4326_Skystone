@@ -34,10 +34,19 @@ public class ColorSenseStopState implements State {
 
     public State update(){
 
-        leftBack.setPower(pow);
-        leftFront.setPower(pow);
-        rightBack.setPower(pow);
-        rightFront.setPower(pow);
+
+        if(dir.equals("forward")){
+            leftBack.setPower(pow);
+            leftFront.setPower(pow);
+            rightBack.setPower(pow);
+            rightFront.setPower(pow);
+        }
+        else if(dir.equals("backward")){
+            leftBack.setPower(-pow);
+            leftFront.setPower(-pow);
+            rightBack.setPower(-pow);
+            rightFront.setPower(-pow);
+        }
 
         if(cs1.red()> 1000 && cs1.red()>cs1.blue() && cs1.red()>cs1.green()){
             leftBack.setPower(0);

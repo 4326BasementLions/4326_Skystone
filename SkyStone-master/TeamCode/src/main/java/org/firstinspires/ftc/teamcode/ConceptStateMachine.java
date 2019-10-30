@@ -62,6 +62,7 @@ public class ConceptStateMachine extends OpMode
 
     colorMoveState parkUnderBridge;
     ColorSenseStopState parkUnderBridge2;
+    ColorSenseStopState bridgeWithBlock;
 
     driveState driveToFoundation;
     driveState straighten;
@@ -193,11 +194,13 @@ driveState moveBackFromBlock;
 
 
 
-        getOffBlock = new driveState(20, .5 , motors, "right");
+        getOffBlock = new driveState(22, .5 , motors, "right");
 
 turnFromBlock = new GyroTurnCCWByPID(110, .5, motors, imu);
 
-moveBackFromBlock = new driveState(20, .5, motors, "backward");
+moveBackFromBlock = new driveState(18, .5, motors, "backward");
+
+bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "red", .225, "backward");
 
         close = new OpenClosePulleyState(motors, rightHand, leftHand, "close");
 
@@ -241,8 +244,8 @@ open.setNextState(null);
        reposition.setNextState(moveALittle);
         moveALittle.setNextState(getOffBlock);
         getOffBlock.setNextState(adjustPulley);
-        adjustPulley.setNextState(moveBackFromBlock);
-        moveBackFromBlock.setNextState(null);
+        adjustPulley.setNextState(bridgeWithBlock);
+        bridgeWithBlock.setNextState(null);
     //    turnFromBlock.setNextState(null);
         //If
 
