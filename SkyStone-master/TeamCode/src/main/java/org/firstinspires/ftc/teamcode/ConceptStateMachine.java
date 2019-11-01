@@ -20,12 +20,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.teamcode.StateMachine; //necessary
 import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
 
 
@@ -107,12 +109,12 @@ driveState moveBackFromBlock;
 
     ElapsedTime mRuntime = new ElapsedTime();
 
-
-
+    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
 
     @Override
     public void init() {
+
         rightFront = hardwareMap.dcMotor.get("right front");
         leftFront = hardwareMap.dcMotor.get("left front");
         rightBack = hardwareMap.dcMotor.get("right back");
