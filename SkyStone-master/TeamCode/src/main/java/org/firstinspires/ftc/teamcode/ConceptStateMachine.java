@@ -91,7 +91,11 @@ public class ConceptStateMachine extends OpMode
 
      OnlyClaspState grabBlock;
 
+     OnlyClaspState startGrabBlock;
+
      driveState strafeToBlock;
+
+     driveState goToMiddleBlock;
 
     //driveState confirmclasp;
     driveState getOffBlock;
@@ -106,10 +110,13 @@ driveState moveBackFromBlock;
     driveState moveALittle;
     GyroTurnCWByPID reposition;
 
+    JustSkyStoneNavigation okTest;
+
 
     ElapsedTime mRuntime = new ElapsedTime();
 
-    int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+    // int cameraMonitorViewId;
+
 
 
     @Override
@@ -119,6 +126,9 @@ driveState moveBackFromBlock;
         leftFront = hardwareMap.dcMotor.get("left front");
         rightBack = hardwareMap.dcMotor.get("right back");
         leftBack = hardwareMap.dcMotor.get("left back");
+
+      //  cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
 
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
 
@@ -163,7 +173,7 @@ driveState moveBackFromBlock;
         //State Declarations
         driveToFoundation = new driveState(50, .4, motors, "forward");
 
-        adjustPulley = new adjustPulleyState(.2,.5 ,motors, rightHand, leftHand );
+        adjustPulley = new adjustPulleyState(.25,.5 ,motors, rightHand, leftHand );
 
         foundationClasp = new OnlyClaspState( clasp, 2,  .8);
 
@@ -181,20 +191,19 @@ driveState moveBackFromBlock;
 
         //GET BLOCKS
 
-        approachBlocks = new driveState(22,.5,motors,"forward");
+        approachBlocks = new driveState(24.4,.5,motors,"forward");
 
-        turnBlock = new GyroTurnCCWByPID(70,.5,motors,imu); //counterclockwise
+        turnBlock = new GyroTurnCCWByPID(90,.5,motors,imu); //counterclockwise
 
-        strafeToBlock = new driveState(4.75,.5,motors, "left");
+        strafeToBlock = new driveState(4.1,.5,motors, "left");
       //  confirmclasp = new driveState(2,.5,motors, "left");
 
-        grabBlock = new OnlyClaspState(clasp,3,1);
+       startGrabBlock = new OnlyClaspState(clasp, 2, .75);
+        grabBlock = new OnlyClaspState(clasp,1,1);
 
        reposition = new GyroTurnCWByPID(6.5, 0.5, motors, imu); //clockwise
-        moveALittle = new driveState(5, .5, motors, "left");//added this to move a little
 
-
-
+        moveALittle = new driveState(6, .5, motors, "left");//added this to move a little
 
         getOffBlock = new driveState(22, .5 , motors, "right");
 
@@ -213,8 +222,11 @@ bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "red", .225, "bac
         moveUp = new movePulleyState(1.0, -.5, motors, rightHand, leftHand);
 
 
-        //HUGLIFT
+        goToMiddleBlock = new driveState(.3,.5,motors,"forward");
 
+
+        //HUGLIFT
+      //      okTest = new JustSkyStoneNavigation(motors, "no", cameraMonitorViewId);
 
 
 
@@ -240,11 +252,13 @@ open.setNextState(null);
 //        getOffWall.setNextState(parkUnderBridge2);
 //
         approachBlocks.setNextState(turnBlock);
-        turnBlock.setNextState(strafeToBlock);
-        strafeToBlock.setNextState(grabBlock);
-        grabBlock.setNextState(reposition);
-       reposition.setNextState(moveALittle);
-        moveALittle.setNextState(getOffBlock);
+        turnBlock.setNextState(goToMiddleBlock);
+        goToMiddleBlock.setNextState(startGrabBlock);
+        //strafeToBlock.setNextState(grabBlock);
+        startGrabBlock.setNextState(reposition);
+        reposition.setNextState(moveALittle);
+        moveALittle.setNextState(grabBlock);
+        grabBlock.setNextState(getOffBlock);
         getOffBlock.setNextState(adjustPulley);
         adjustPulley.setNextState(bridgeWithBlock);
         bridgeWithBlock.setNextState(null);

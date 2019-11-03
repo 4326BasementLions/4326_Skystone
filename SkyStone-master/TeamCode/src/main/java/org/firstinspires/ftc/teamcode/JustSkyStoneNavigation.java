@@ -24,7 +24,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import org.firstinspires.ftc.teamcode.StateMachine.State;
 
-@TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
 public class JustSkyStoneNavigation implements State {
 
 
@@ -71,7 +70,7 @@ public class JustSkyStoneNavigation implements State {
     VuforiaTrackables targetsSkyStone = this.vuforia.loadTrackablesFromAsset("Skystone");
 
     List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-    allTrackables.addAll(targetsSkyStone);
+   // allTrackables.addAll(targetsSkyStone); //ADD IT BACK AFTER COMPILING
     public State setNextState (State NextState){
        return NextState;
     }
@@ -163,14 +162,13 @@ public class JustSkyStoneNavigation implements State {
     }
     public State update(){
       // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        targetsSkyStone.activate(); //sensing is activated
+        targetsSkyStone.activate();
         //while (!isStopRequested()) {
 
             // check all the trackable targets to see which one (if any) is visible.
             targetVisible = false;
             for (VuforiaTrackable trackable : allTrackables) {
                 if (((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible()) {
-                    //telemetry.addData("Visible Target", trackable.getName());
                     targetVisible = true;
 
                     // getUpdatedRobotLocation() will return null if no new information is available since
@@ -187,17 +185,12 @@ public class JustSkyStoneNavigation implements State {
             if (targetVisible) {
                 // express position (translation) of robot in inches.
                 VectorF translation = lastLocation.getTranslation();
-//                telemetry.addData("Pos (in)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-//                        translation.get(0) / mmPerInch, translation.get(1) / mmPerInch, translation.get(2) / mmPerInch);;;;;;;;;;
-
-                // express the rotation of the robot in degrees.
                 Orientation rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
-               // telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", rotation.firstAngle, rotation.secondAngle, rotation.thirdAngle);
-            }
+                }
             else {
-             //   telemetry.addData("Visible Target", "none");
+
             }
-           // telemetry.update();
+
        // }
 
         // Disable Tracking when we are done;
