@@ -15,6 +15,8 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -27,7 +29,19 @@ import java.util.ArrayList;
 import java.util.Locale;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.*;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
 
 
 
@@ -110,39 +124,76 @@ driveState moveBackFromBlock;
     driveState moveALittle;
     GyroTurnCWByPID reposition;
 
-    JustSkyStoneNavigation okTest;
+    JustSkyStoneNavigationState okTest;
 
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
+    private static final boolean PHONE_IS_PORTRAIT = false  ;
+
+    private static final String VUFORIA_KEY =
+            " ATfbkf//////AAABmSdKrt64X0UDrXZRbiIdwVl9iuhdq1WQN1irJAz1O/XAe4vAgTnNCQsLzqtENwAZjOfmIvzpWoO8CD4VW6uZ6gGSYAv8gLSG4Ew+HLqDbKrN+gyhJPkxwiKDFXIHWeSNuGh3UUSKGj++8ggR9vYFTyLqXpvy2uwI+z66wWL3aPUU5KjK0N8oy5+IyddBgKGDHw2QacCqKJvMuL+VOOPNYdwKC3nQ+caRIS4gsJQwQ3FZrgY/oHgfse+vLRdoBKfhV2Pl6d2kqphlXivEWaPcvkOrpkkJvqR7aYwvkkO6Aqlph6YdLRp6okEauD6zly8s4rUqoCKmOd4cEx8TfamSqg/jhc4eRbN0koLdkOWL53nG";
+
+    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // We will define some constants and conversions here
+    private static final float mmPerInch        = 25.4f;
+    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+
+    // Constant for Stone Target
+    private static final float stoneZ = 2.00f * mmPerInch;
+
+    // Constants for the center support targets
+    private static final float bridgeZ = 6.42f * mmPerInch;
+    private static final float bridgeY = 23 * mmPerInch;
+    private static final float bridgeX = 5.18f * mmPerInch;
+    private static final float bridgeRotY = 59;                                 // Units are degrees
+    private static final float bridgeRotZ = 180;
+
+    // Constants for perimeter targets
+    private static final float halfField = 72 * mmPerInch;
+    private static final float quadField  = 36 * mmPerInch;
+
+    // Class Members
+    private OpenGLMatrix lastLocation = null;
+    private VuforiaLocalizer vuforia = null;
+    private boolean targetVisible = false;
+    private float phoneXRotate    = 0;
+    private float phoneYRotate    = 0;
+    private float phoneZRotate    = 0;
 
     ElapsedTime mRuntime = new ElapsedTime();
 
-    // int cameraMonitorViewId;
-
-
+     int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//;
+      public CameraDevice cam;//camera!
+    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
     @Override
     public void init() {
 
-        rightFront = hardwareMap.dcMotor.get("right front");
-        leftFront = hardwareMap.dcMotor.get("left front");
-        rightBack = hardwareMap.dcMotor.get("right back");
-        leftBack = hardwareMap.dcMotor.get("left back");
+//        rightFront = hardwareMap.dcMotor.get("right front");
+//        leftFront = hardwareMap.dcMotor.get("left front");
+//        rightBack = hardwareMap.dcMotor.get("right back");
+//        leftBack = hardwareMap.dcMotor.get("left back");
+//
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection   = CAMERA_CHOICE;
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-      //  cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
-
-        colorSensor = hardwareMap.colorSensor.get("colorSensor");
-
-        clasp = hardwareMap.servo.get("clasp");
-
-        leftHand = hardwareMap.servo.get("left");
-        rightHand = hardwareMap.servo.get("right");
-
-        pulley = hardwareMap.dcMotor.get("pulley");
-
-
-
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//
+//
+//        colorSensor = hardwareMap.colorSensor.get("colorSensor");
+//
+//        clasp = hardwareMap.servo.get("clasp");
+//
+//        leftHand = hardwareMap.servo.get("left");
+//        rightHand = hardwareMap.servo.get("right");
+//
+//        pulley = hardwareMap.dcMotor.get("pulley");
+//
+//
+//
+//        rightFront.setDirection(DcMotor.Direction.REVERSE);
+//        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
 
         ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
@@ -165,10 +216,10 @@ driveState moveBackFromBlock;
 
 
         // Set all motors to zero power
-        rightFront.setPower(0);
-        leftFront.setPower(0);
-        rightBack.setPower(0);
-        leftBack.setPower(0);
+//        rightFront.setPower(0);
+//        leftFront.setPower(0);
+//        rightBack.setPower(0);
+//        leftBack.setPower(0);
 
         //State Declarations
         driveToFoundation = new driveState(50, .4, motors, "forward");
@@ -226,16 +277,16 @@ bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "red", .225, "bac
 
 
         //HUGLIFT
-      //      okTest = new JustSkyStoneNavigation(motors, "no", cameraMonitorViewId);
+          okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
 
 
 
 
 
 
-
+okTest.setNextState(null);
 //open.setNextState(mo);
-moveDown.setNextState(close);
+/*moveDown.setNextState(close);
 close.setNextState(moveUp);
 moveUp.setNextState(open);
 open.setNextState(null);
@@ -261,7 +312,7 @@ open.setNextState(null);
         grabBlock.setNextState(getOffBlock);
         getOffBlock.setNextState(adjustPulley);
         adjustPulley.setNextState(bridgeWithBlock);
-        bridgeWithBlock.setNextState(null);
+        bridgeWithBlock.setNextState(null);*/
     //    turnFromBlock.setNextState(null);
         //If
 
@@ -282,15 +333,15 @@ open.setNextState(null);
 
     @Override
     public void start(){
-        machine = new StateMachine(approachBlocks);
-        while (machine.currentState().equals(grabBlock)){
-//            mRuntime.reset();
-//            if(mRuntim){
-//
-//            }
-            wait(1);
-            //break;
-        }
+        machine = new StateMachine(okTest);
+//        while (machine.currentState().equals(okTest)){
+////            mRuntime.reset();
+////            if(mRuntim){
+////
+////            }
+//            wait(1);
+//            //break;
+//        }
 
     }
 

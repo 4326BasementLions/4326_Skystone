@@ -24,7 +24,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 import org.firstinspires.ftc.teamcode.StateMachine.State;
 
-public class JustSkyStoneNavigation implements State {
+public class JustSkyStoneNavigationState implements State {
 
 
     DcMotor leftFront;
@@ -36,11 +36,11 @@ public class JustSkyStoneNavigation implements State {
 
     String pos;
 
-    public JustSkyStoneNavigation(ArrayList<DcMotor> motor, String Pos, int cameraMonitorViewId){
-        leftFront = motor.get(0);
-        rightFront = motor.get(1);
-        leftBack = motor.get(2);
-        rightBack = motor.get(3);
+    public JustSkyStoneNavigationState(ArrayList<DcMotor> motor, String Pos, int cameraMonitorViewId){
+//        leftFront = motor.get(0);
+//        rightFront = motor.get(1);
+//        leftBack = motor.get(2);
+//        rightBack = motor.get(3);
          pos = Pos;
          CMVID = cameraMonitorViewId;
     }
