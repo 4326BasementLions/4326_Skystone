@@ -87,8 +87,7 @@ public class driveState implements StateMachine.State {
 
     @Override
     public StateMachine.State update() {
-
-        if(newleftBackTarget > leftBack.getCurrentPosition() && newrightBackTarget > rightBack.getCurrentPosition() && newleftFrontTarget > leftFront.getCurrentPosition() && newrightFrontTarget > rightFront.getCurrentPosition() ) {
+        if((!Movement.equals("backward"))&&(newleftBackTarget < leftBack.getCurrentPosition() && newrightBackTarget < rightBack.getCurrentPosition() && newleftFrontTarget < leftFront.getCurrentPosition() && newrightFrontTarget < rightFront.getCurrentPosition() ) ) {
 
             if(Movement.equals("left")) {
                 leftBack.setPower(driveSpeed);
@@ -129,12 +128,25 @@ public class driveState implements StateMachine.State {
             }
 
             return this;
-        }else {
+        }
+
+        else if (Movement.equals("backward")&&(newleftBackTarget < leftBack.getCurrentPosition() && newrightBackTarget < rightBack.getCurrentPosition() && newleftFrontTarget < leftFront.getCurrentPosition() && newrightFrontTarget < rightFront.getCurrentPosition() ) ){
+                leftBack.setPower(-driveSpeed);
+                leftFront.setPower(-driveSpeed);
+                rightBack.setPower(-driveSpeed);
+                rightFront.setPower(-driveSpeed);
+
+
+            return this;
+        } else {
             rightFront.setPower(0);
             leftFront.setPower(0);
             rightBack.setPower(0);
             leftBack.setPower(0);
             return NextState;
         }
+
+
     }
+
 }

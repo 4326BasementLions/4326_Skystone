@@ -43,95 +43,115 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
-@Autonomous(name="BlueFoundation", group="Iterative Opmode")
-public class BlueFoundationMachine extends OpMode{
+@Autonomous(name="RedBlockMachine", group="Iterative Opmode")
+public class RedBlockMachine extends OpMode{
 
     Servo leftHand;
     Servo rightHand;
     Servo clasp;
     BNO055IMU imu;
+    driveState approachBlocks;
+    GyroTurnCCWByPID turnBlock;
+    driveState getOffBlock;
+    driveState moveBackFromBlock;
+    GyroTurnCCWByPID turnFromBlock;
+    OpenClosePulleyState close;
+    OpenClosePulleyState open;
+
+    movePulleyState moveDown;
+    movePulleyState moveUp;
+
+    driveState moveALittle;
+    GyroTurnCWByPID reposition;
+
+    OnlyClaspState grabBlock;
+
+    OnlyClaspState startGrabBlock;
+
+    ColorSenseStopState bridgeWithBlock;
+    driveState goToMiddleBlock;
 
     adjustPulleyState adjustPulley;
-    driveState driveToFoundation;
-    driveState straighten;
-    driveState getOffWall;
-    timeState driveBack;
-    OnlyClaspState foundationClasp;
-    OnlyClaspState releaseClasp;
-    driveState dragFoundationIn;
-    ColorSenseStopState parkUnderBridge2;
-    GyroTurnCWByPID turnRightAngle;
-
+    ColorSensor colorSensor;
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
-
-    ColorSensor colorSensor;
-
     //Setting up the order
-    DcMotor pulley;
 
+    DcMotor pulley;
 
     public void init(){
 
-
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        rightHand = hardwareMap.servo.get("right");
-        leftHand = hardwareMap.servo.get("left");
+        JustSkyStoneNavigationState okTest;
+
+        //int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
         rightFront = hardwareMap.dcMotor.get("right front");
         leftFront = hardwareMap.dcMotor.get("left front");
         rightBack = hardwareMap.dcMotor.get("right back");
         leftBack = hardwareMap.dcMotor.get("left back");
         pulley = hardwareMap.dcMotor.get("pulley");
         clasp = hardwareMap.servo.get("clasp");
-        ArrayList<DcMotor> motors = new ArrayList<>();
+        ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
         motors.add(rightFront);
         motors.add(leftFront);
         motors.add(rightBack);
         motors.add(leftBack);
         motors.add(pulley);
+        //okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-
-        driveToFoundation = new driveState(-47, .4, motors, "backward");
-
+        startGrabBlock = new OnlyClaspState(clasp, 2, .75);
+        grabBlock = new OnlyClaspState(clasp,1,1);
         adjustPulley = new adjustPulleyState(.25,.5 ,motors, rightHand, leftHand );
+        reposition = new GyroTurnCWByPID(6.5, 0.5, motors, imu); //clockwise
 
-        foundationClasp = new OnlyClaspState(clasp, 2,  1.2);
+        moveALittle = new driveState(6, .5, motors, "left");//added this to move a little
+
+        getOffBlock = new driveState(22, .5 , motors, "right");
+
+        turnFromBlock = new GyroTurnCCWByPID(110, .5, motors, imu);
+
+        moveBackFromBlock = new driveState(18, .5, motors, "backward");
+
+        bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "red", .225, "backward");
+
+        close = new OpenClosePulleyState(motors, rightHand, leftHand, "close");
+
+        open = new OpenClosePulleyState(motors, rightHand, leftHand, "open");
+
+        moveDown = new movePulleyState(1.0, .5, motors, rightHand, leftHand);
+
+        moveUp = new movePulleyState(1.0, -.5, motors, rightHand, leftHand);
 
 
-        parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "backward");
+        goToMiddleBlock = new driveState(.3,.5,motors,"forward");
 
-        turnRightAngle = new GyroTurnCWByPID(90, .5, motors, imu);
-        driveBack = new timeState(5, .5, motors, "backward");
-
-        releaseClasp = new OnlyClaspState(clasp, 2, 0 );
-        straighten = new driveState(5,.5, motors, "right");
-        getOffWall = new driveState(2, .5 , motors, "left");
-        dragFoundationIn = new driveState(5, .5 , motors, "right");
 
 
 
         //Sequence
 
 
-        driveToFoundation.setNextState(adjustPulley);
-        adjustPulley.setNextState(foundationClasp);
-        foundationClasp.setNextState(driveBack);
-        driveBack.setNextState(dragFoundationIn);
-        dragFoundationIn.setNextState(releaseClasp);
-        releaseClasp.setNextState(straighten);
-        straighten.setNextState(getOffWall);
-        getOffWall.setNextState(parkUnderBridge2);
+        approachBlocks.setNextState(turnBlock);
+        turnBlock.setNextState(goToMiddleBlock);
+        goToMiddleBlock.setNextState(startGrabBlock);
+        //strafeToBlock.setNextState(grabBlock);
+        startGrabBlock.setNextState(reposition);
+        reposition.setNextState(moveALittle);
+        moveALittle.setNextState(grabBlock);
+        grabBlock.setNextState(getOffBlock);
+        getOffBlock.setNextState(adjustPulley);
+        adjustPulley.setNextState(bridgeWithBlock);
+        bridgeWithBlock.setNextState(null);
 
 
     }
 
     @Override
     public void start(){
-        machine = new StateMachine(driveToFoundation);
+        machine = new StateMachine(approachBlocks);
 
     }
     private StateMachine machine;

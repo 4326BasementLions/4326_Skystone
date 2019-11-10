@@ -73,6 +73,7 @@ public class        mech_test extends OpMode
     DcMotor leftBack;
     DcMotor rightBack;
     double x = .5;
+    double z = .5;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -96,8 +97,8 @@ public class        mech_test extends OpMode
       //  telemetry.addData("leftpos", left.getPosition());
 
 
-        leftHand = hardwareMap.servo.get("turn");
-        rightHand = hardwareMap.servo.get("smol");
+        leftHand = hardwareMap.servo.get("leftHand");
+        rightHand = hardwareMap.servo.get("rightHand");
 
         pulley = hardwareMap.dcMotor.get("pulley");
 
@@ -138,23 +139,42 @@ public class        mech_test extends OpMode
     @Override
     public void loop() {
 
-        pulley.setPower(gamepad2.right_stick_y);
+        pulley.setPower(gamepad2.left_stick_y/2);
 
-        leftHand.setPosition(x);
-        if(gamepad2.left_bumper){
-//        Unfortunately, using .getPos within the .setPos method lead to an infinite loop, as .getPos would constantly update
-            x+=.1;
-        }
-        if(gamepad2.right_bumper){
-//
-            x-=.1;
-        }
-        if(gamepad2.a){
-            rightHand.setPosition(rightHand.getPosition()+.1);
-        }
-        if(gamepad2.b){
-            rightHand.setPosition(rightHand.getPosition()-.1);
-        }
+
+
+//        if(gamepad2.left_bumper){
+////        Unfortunately, using .getPos within the .setPos method lead to an infinite loop, as .getPos would constantly update
+//            x = x + .1;
+//        }
+//        if(gamepad2.right_bumper){
+////
+//            x = x - .1;
+//        }
+
+if(gamepad2.right_stick_y>0){
+    x+=.01;
+    z-=.01;
+}
+if(gamepad2.right_stick_y<0){
+            x-=.01;
+            z+=.01;
+}
+else if(gamepad2.x){
+    x=.5;
+    z=.5;
+
+}
+        leftHand.setPosition(gamepad2.right_stick_y);
+        rightHand.setPosition(-gamepad2.right_stick_y);
+
+
+//        if(gamepad2.a){
+//            rightHand.setPosition(rightHand.getPosition()+.1);
+//        }
+//        if(gamepad2.b){
+//            rightHand.setPosition(rightHand.getPosition()-.1);
+//        }
 //        float drive = gamepad1.right_stick_y;
 //        float strafe = gamepad1.right_stick_x;
 //        float turn = gamepad1.left_stick_x;

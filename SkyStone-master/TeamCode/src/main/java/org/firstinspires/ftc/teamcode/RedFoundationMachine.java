@@ -62,42 +62,44 @@ public class RedFoundationMachine extends OpMode{
     ColorSenseStopState parkUnderBridge2;
     GyroTurnCCWByPID turnRightAngle;
 
+    DcMotor leftFront;
+    DcMotor rightFront;
+    DcMotor leftBack;
+    DcMotor rightBack;
 
-
-
+    ColorSensor colorSensor;
 
             //Setting up the order
-
+            DcMotor pulley;
 
 
         public void init(){
-            ColorSensor colorSensor;
+
+
             colorSensor = hardwareMap.colorSensor.get("colorSensor");
-            JustSkyStoneNavigationState okTest;
-            DcMotor leftFront;
-            DcMotor rightFront;
-            DcMotor leftBack;
-            DcMotor rightBack;
-            int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-            DcMotor pulley;
+            rightHand = hardwareMap.servo.get("right");
+            leftHand = hardwareMap.servo.get("left");
             rightFront = hardwareMap.dcMotor.get("right front");
-        leftFront = hardwareMap.dcMotor.get("left front");
-        rightBack = hardwareMap.dcMotor.get("right back");
-        leftBack = hardwareMap.dcMotor.get("left back");
+            leftFront = hardwareMap.dcMotor.get("left front");
+            rightBack = hardwareMap.dcMotor.get("right back");
+            leftBack = hardwareMap.dcMotor.get("left back");
             pulley = hardwareMap.dcMotor.get("pulley");
-            ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
+            clasp = hardwareMap.servo.get("clasp");
+            ArrayList<DcMotor> motors = new ArrayList<>();
             motors.add(rightFront);
             motors.add(leftFront);
             motors.add(rightBack);
             motors.add(leftBack);
             motors.add(pulley);
-            okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
 
-            driveToFoundation = new driveState(50, .4, motors, "forward");
+            rightFront.setDirection(DcMotor.Direction.REVERSE);
+            rightBack.setDirection(DcMotor.Direction.REVERSE);
+
+            driveToFoundation = new driveState(47, .4, motors, "forward");
 
             adjustPulley = new adjustPulleyState(.25,.5 ,motors, rightHand, leftHand );
 
-            foundationClasp = new OnlyClaspState( clasp, 2,  .8);
+            foundationClasp = new OnlyClaspState(clasp, 2,  1.2);
 
 
             parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "forward");
@@ -105,7 +107,7 @@ public class RedFoundationMachine extends OpMode{
             turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
             driveBack = new timeState(5, .5, motors, "backward");
 
-            releaseClasp = new OnlyClaspState( clasp, 2, 0 );
+            releaseClasp = new OnlyClaspState(clasp, 2, 0 );
             straighten = new driveState(5,.5, motors, "right");
             getOffWall = new driveState(2, .5 , motors, "left");
             dragFoundationIn = new driveState(5, .5 , motors, "right");
@@ -115,7 +117,6 @@ public class RedFoundationMachine extends OpMode{
           //Sequence
 
 
-            adjustPulley.setNextState(driveToFoundation);
             driveToFoundation.setNextState(adjustPulley);
             adjustPulley.setNextState(foundationClasp);
             foundationClasp.setNextState(driveBack);
@@ -130,7 +131,7 @@ public class RedFoundationMachine extends OpMode{
 
     @Override
     public void start(){
-        machine = new StateMachine(adjustPulley);
+        machine = new StateMachine(driveToFoundation);
 
     }
     private StateMachine machine;

@@ -77,8 +77,8 @@ public class ConceptStateMachine extends OpMode
 
 
     colorMoveState parkUnderBridge;
-    ColorSenseStopState parkUnderBridge2;
     ColorSenseStopState bridgeWithBlock;
+    ColorSenseStopState parkUnderBridge2;
 
     driveState driveToFoundation;
     driveState straighten;
