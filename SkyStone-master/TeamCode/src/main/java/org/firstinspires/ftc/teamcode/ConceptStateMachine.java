@@ -46,7 +46,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
 
-@Autonomous(name="State Machine Test 2.76", group="Iterative Opmode")
+@Autonomous(name="State Machine Test 2.77", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
 //test comment!ahs
@@ -161,10 +161,10 @@ driveState moveBackFromBlock;
 
     ElapsedTime mRuntime = new ElapsedTime();
 
-     int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//;
+//     int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+////;
       public CameraDevice cam;//camera!
-    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+//    VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
     @Override
     public void init() {
@@ -174,12 +174,12 @@ driveState moveBackFromBlock;
 //        rightBack = hardwareMap.dcMotor.get("right back");
 //        leftBack = hardwareMap.dcMotor.get("left back");
 //
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection   = CAMERA_CHOICE;
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+//        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+//        parameters.cameraDirection   = CAMERA_CHOICE;
+//        vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
-        cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//
+//        cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+////
 //
 //        colorSensor = hardwareMap.colorSensor.get("colorSensor");
 //
@@ -192,8 +192,8 @@ driveState moveBackFromBlock;
 //
 //
 //
-//        rightFront.setDirection(DcMotor.Direction.REVERSE);
-//        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
 
         ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
@@ -277,7 +277,7 @@ bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "red", .225, "bac
 
 
         //HUGLIFT
-          okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
+         // okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
 
 
 

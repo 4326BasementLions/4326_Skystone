@@ -83,6 +83,19 @@ public class RedBlockMachine extends OpMode{
 
     public void init(){
 
+
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        imu.initialize(parameters);
+
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
         JustSkyStoneNavigationState okTest;
 
@@ -92,8 +105,13 @@ public class RedBlockMachine extends OpMode{
         leftFront = hardwareMap.dcMotor.get("left front");
         rightBack = hardwareMap.dcMotor.get("right back");
         leftBack = hardwareMap.dcMotor.get("left back");
+        rightHand = hardwareMap.servo.get("right");
+        leftHand = hardwareMap.servo.get("left");
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
         pulley = hardwareMap.dcMotor.get("pulley");
         clasp = hardwareMap.servo.get("clasp");
+
         ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
         motors.add(rightFront);
         motors.add(leftFront);
@@ -102,31 +120,34 @@ public class RedBlockMachine extends OpMode{
         motors.add(pulley);
         //okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
 
+
+        approachBlocks = new driveState(24.4,.5,motors,"forward");
+
+        turnBlock = new GyroTurnCCWByPID(90,.5,motors,imu); //counterclockwise
+
+        //strafeToBlock = new driveState(4.1,.5,motors, "left");
+
+        goToMiddleBlock = new driveState(.3,.5,motors,"forward");
+
+
         startGrabBlock = new OnlyClaspState(clasp, 2, .75);
-        grabBlock = new OnlyClaspState(clasp,1,1);
-        adjustPulley = new adjustPulleyState(.25,.5 ,motors, rightHand, leftHand );
+
         reposition = new GyroTurnCWByPID(6.5, 0.5, motors, imu); //clockwise
 
         moveALittle = new driveState(6, .5, motors, "left");//added this to move a little
 
+
+        grabBlock = new OnlyClaspState(clasp,1,1);
+
         getOffBlock = new driveState(22, .5 , motors, "right");
 
-        turnFromBlock = new GyroTurnCCWByPID(110, .5, motors, imu);
+        adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
 
-        moveBackFromBlock = new driveState(18, .5, motors, "backward");
-
-        bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "red", .225, "backward");
-
-        close = new OpenClosePulleyState(motors, rightHand, leftHand, "close");
-
-        open = new OpenClosePulleyState(motors, rightHand, leftHand, "open");
-
-        moveDown = new movePulleyState(1.0, .5, motors, rightHand, leftHand);
-
-        moveUp = new movePulleyState(1.0, -.5, motors, rightHand, leftHand);
+        bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "blue", .225, "backward");
 
 
-        goToMiddleBlock = new driveState(.3,.5,motors,"forward");
+
+
 
 
 

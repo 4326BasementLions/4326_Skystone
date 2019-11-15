@@ -34,7 +34,7 @@ public class ColorSenseStopState implements State {
 
     public State update(){
 
-
+if(cval.equals("red")){
         if(dir.equals("forward")){
             leftBack.setPower(pow);
             leftFront.setPower(pow);
@@ -58,8 +58,35 @@ public class ColorSenseStopState implements State {
 
         return this;
     }
+    else if(cval.equals("blue")){
+    if(dir.equals("forward")){
+        leftBack.setPower(pow);
+        leftFront.setPower(pow);
+        rightBack.setPower(pow);
+        rightFront.setPower(pow);
+    }
+    else if(dir.equals("backward")){
+        leftBack.setPower(-pow);
+        leftFront.setPower(-pow);
+        rightBack.setPower(-pow);
+        rightFront.setPower(-pow);
+    }
 
-    public int getColor(){
+    if(cs1.blue()> 1000 && cs1.blue()>cs1.red() && cs1.blue()>cs1.green()){
+        leftBack.setPower(0);
+        leftFront.setPower(0);
+        rightBack.setPower(0);
+        rightFront.setPower(0);
+        return NextState;
+    }
+
+    return this;
+}
+
+return this;
+}
+
+public int getColor(){
 
         return cs1.red();
 

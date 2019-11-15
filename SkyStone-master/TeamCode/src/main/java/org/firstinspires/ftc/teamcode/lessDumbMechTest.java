@@ -51,8 +51,8 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="NJ Test", group="Iterative Opmode")
-public class        mech_test extends OpMode
+@TeleOp(name="servos-please-move", group="Iterative Opmode")
+public class        lessDumbMechTest extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -68,7 +68,6 @@ public class        mech_test extends OpMode
     Servo leftHand;
 
     Servo rightHand;
-    Servo clasp;
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftBack;
@@ -83,30 +82,23 @@ public class        mech_test extends OpMode
     public void init() {
         telemetry.addData("Status", "Initialized");
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-      //  lift  = hardwareMap.get(DcMotor.class, "lift");
-    //    left = hardwareMap.get(Servo.class, "left");
-       // right = hardwareMap.get(Servo.class, "right");
 
 
 
+        leftHand = hardwareMap.servo.get("leftHand");
+        rightHand = hardwareMap.servo.get("rightHand");
 
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
-      //  telemetry.addData("leftpos", left.getPosition());
+        pulley = hardwareMap.dcMotor.get("pulley");
 
+
+        //telemetry.addData("rightpos", right.getPosition());
         rightFront = hardwareMap.dcMotor.get("right front");
         leftFront = hardwareMap.dcMotor.get("left front");
         rightBack = hardwareMap.dcMotor.get("right back");
         leftBack = hardwareMap.dcMotor.get("left back");
-        rightHand = hardwareMap.servo.get("right");
-        leftHand = hardwareMap.servo.get("left");
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
-        pulley = hardwareMap.dcMotor.get("pulley");
-        clasp = hardwareMap.servo.get("clasp");
+
     }
 
     /*
@@ -114,6 +106,9 @@ public class        mech_test extends OpMode
      */
     @Override
     public void init_loop() {
+        leftHand.setPosition(0);
+        rightHand.setPosition(0);
+
     }
 
     /*
@@ -122,8 +117,8 @@ public class        mech_test extends OpMode
     @Override
     public void start() {
 
-        leftHand.setPosition(.5);
-        rightHand.setPosition(.5);
+        leftHand.setPosition(0);
+        rightHand.setPosition(0);
 
         runtime.reset();
     }
@@ -135,72 +130,16 @@ public class        mech_test extends OpMode
     @Override
     public void loop() {
 
-        pulley.setPower(gamepad2.left_stick_y/4);
+        //pulley.setPower(gamepad2.left_stick_y/2);
 
+        leftHand.setPosition(gamepad1.left_stick_y);
 
+        rightHand.setPosition(gamepad1.right_stick_y);
 
-        if(gamepad2.right_trigger>0){
-//        Unfortunately, using .getPos within the .setPos method lead to an infinite loop, as .getPos would constantly update
-            x = x + .025;
-            z = z - .025;
-        }
-        if(gamepad2.left_trigger>0){
-            x = x - .025;
-            z = z + .025;
-//
-
-        }
-
-        if(x>1){
-            x=1;
-
-        }
-        if(x<0){
-            x=0;
-        }
-        if(z>1){
-            z=1;
-        }
-        if(z<0){
-            z=0;
-        }
-
-//
-//if(gamepad2.right_stick_y>0){
-//    x+=.01;
-//    z-=.01;
-//}
-//if(gamepad2.right_stick_y<0){
-//            x-=.01;
-//            z+=.01;
-//}
-//else if(gamepad2.x){
-//    x=.5;j
-//    z=.5;
-//
-//}
-//        leftHand.setPosition(gamepad1.left_stick_y);
-//
-//        rightHand.setPosition(gamepad1.right_stick_y);
-        float drive = gamepad1.right_stick_y;
-        float strafe = gamepad1.right_stick_x;
-        float turn = gamepad1.left_stick_x;
-
-        float fl = drive - strafe + turn;
-        float fr = drive + strafe - turn;
-        float bl = drive + strafe + turn;
-        float br = drive - strafe - turn;
-
-        leftFront.setPower(fl);
-        rightFront.setPower(fr);
-        leftBack.setPower(bl);
-        rightBack.setPower(br);
-
-//
-
-
-leftHand.setPosition(x);
-rightHand.setPosition(z);
+        rightFront.setPower(gamepad2.right_stick_y);
+        rightBack.setPower(gamepad2.right_stick_y);
+        leftFront.setPower(gamepad2.left_stick_y);
+        leftBack.setPower(gamepad2.left_stick_y);
 
     }
 
