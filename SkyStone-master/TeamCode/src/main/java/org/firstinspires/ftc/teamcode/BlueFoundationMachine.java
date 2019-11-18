@@ -97,7 +97,7 @@ public class BlueFoundationMachine extends OpMode{
 
         driveToFoundation = new driveState(-47, .4, motors, "backward");
 
-        adjustPulley = new adjustPulleyState(.25,.5 ,motors, rightHand, leftHand );
+        adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
 
         foundationClasp = new OnlyClaspState(clasp, 2,  1.2);
 
@@ -108,24 +108,26 @@ public class BlueFoundationMachine extends OpMode{
         driveBack = new timeState(5, .5, motors, "backward");
 
         releaseClasp = new OnlyClaspState(clasp, 2, 0 );
-        straighten = new driveState(5,.5, motors, "right");
-        getOffWall = new driveState(2, .5 , motors, "left");
-        dragFoundationIn = new driveState(5, .5 , motors, "right");
+        straighten = new driveState(5,.5, motors, "left");//right
+        getOffWall = new driveState(2, .5 , motors, "right");//left
+        dragFoundationIn = new driveState(5, .5 , motors, "left");//right
 
 
 
         //Sequence
 
 
-        driveToFoundation.setNextState(adjustPulley);
-        adjustPulley.setNextState(foundationClasp);
+        driveToFoundation.setNextState(foundationClasp);
+        // adjustPulley.setNextState(foundationClasp);
         foundationClasp.setNextState(driveBack);
         driveBack.setNextState(dragFoundationIn);
         dragFoundationIn.setNextState(releaseClasp);
         releaseClasp.setNextState(straighten);
         straighten.setNextState(getOffWall);
-        getOffWall.setNextState(parkUnderBridge2);
-
+        //adjustPulley.setNextState(getOffWall);
+        getOffWall.setNextState(adjustPulley);
+        adjustPulley.setNextState(parkUnderBridge2);
+        parkUnderBridge2.setNextState(null);
 
     }
 

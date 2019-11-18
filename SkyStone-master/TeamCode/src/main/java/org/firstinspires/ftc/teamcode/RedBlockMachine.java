@@ -121,7 +121,7 @@ public class RedBlockMachine extends OpMode{
         //okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
 
 
-        approachBlocks = new driveState(24.4,.5,motors,"forward");
+        approachBlocks = new driveState(24.1,.5,motors,"forward");
 
         turnBlock = new GyroTurnCCWByPID(90,.5,motors,imu); //counterclockwise
 

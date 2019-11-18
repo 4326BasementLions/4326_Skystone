@@ -75,6 +75,7 @@ public class        mech_test extends OpMode
     DcMotor rightBack;
     double x = .5;
     double z = .5;
+    double n = .5;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -135,7 +136,7 @@ public class        mech_test extends OpMode
     @Override
     public void loop() {
 
-        pulley.setPower(gamepad2.left_stick_y/4);
+        pulley.setPower(-gamepad2.left_stick_y/4);
 
 
 
@@ -150,6 +151,12 @@ public class        mech_test extends OpMode
 //
 
         }
+        if(gamepad1.right_trigger>0){
+            n = n + .025;
+        }
+        if(gamepad1.left_trigger>0){
+            n = n - .025;
+        }
 
         if(x>1){
             x=1;
@@ -163,6 +170,12 @@ public class        mech_test extends OpMode
         }
         if(z<0){
             z=0;
+        }
+        if(n>1){
+            n=1;
+        }
+        if(n<0){
+            n=0;
         }
 
 //
@@ -201,6 +214,7 @@ public class        mech_test extends OpMode
 
 leftHand.setPosition(x);
 rightHand.setPosition(z);
+clasp.setPosition(n);
 
     }
 

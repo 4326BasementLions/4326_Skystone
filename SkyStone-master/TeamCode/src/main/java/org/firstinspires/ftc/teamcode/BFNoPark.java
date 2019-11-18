@@ -43,129 +43,96 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
-@Autonomous(name="BlueBlockMachine", group="Iterative Opmode")
-public class BlueBlockMachine extends OpMode{
+@Autonomous(name="BlueFoundationNOPARK", group="Iterative Opmode")
+public class BFNoPark extends OpMode{
 
     Servo leftHand;
     Servo rightHand;
     Servo clasp;
     BNO055IMU imu;
-    driveState approachBlocks;
-    GyroTurnCCWByPID turnBlock;
-    driveState getOffBlock;
-    driveState moveBackFromBlock;
-    GyroTurnCCWByPID turnFromBlock;
-    OpenClosePulleyState close;
-    OpenClosePulleyState open;
-
-    movePulleyState moveDown;
-    movePulleyState moveUp;
-
-    driveState moveALittle;
-    GyroTurnCWByPID reposition;
-
-    OnlyClaspState grabBlock;
-
-    OnlyClaspState startGrabBlock;
-
-    ColorSenseStopState bridgeWithBlock;
-    driveState goToMiddleBlock;
 
     adjustPulleyState adjustPulley;
-    //Setting up the order
-    ColorSensor colorSensor;
+    driveState driveToFoundation;
+    driveState straighten;
+    driveState getOffWall;
+    timeState driveBack;
+    OnlyClaspState foundationClasp;
+    OnlyClaspState releaseClasp;
+    driveState dragFoundationIn;
+    ColorSenseStopState parkUnderBridge2;
+    GyroTurnCWByPID turnRightAngle;
+
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
+
+    ColorSensor colorSensor;
+
+    //Setting up the order
     DcMotor pulley;
+
 
     public void init(){
 
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        imu.initialize(parameters);
-
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        JustSkyStoneNavigationState okTest;
-
-       // int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-
+        rightHand = hardwareMap.servo.get("right");
+        leftHand = hardwareMap.servo.get("left");
         rightFront = hardwareMap.dcMotor.get("right front");
         leftFront = hardwareMap.dcMotor.get("left front");
         rightBack = hardwareMap.dcMotor.get("right back");
         leftBack = hardwareMap.dcMotor.get("left back");
-        rightHand = hardwareMap.servo.get("right");
-        leftHand = hardwareMap.servo.get("left");
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
         pulley = hardwareMap.dcMotor.get("pulley");
         clasp = hardwareMap.servo.get("clasp");
-        ArrayList<DcMotor> motors = new ArrayList<DcMotor>();
+        ArrayList<DcMotor> motors = new ArrayList<>();
         motors.add(rightFront);
         motors.add(leftFront);
         motors.add(rightBack);
         motors.add(leftBack);
         motors.add(pulley);
 
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
-
-        approachBlocks = new driveState(24.1,.5,motors,"forward");
-
-        turnBlock = new GyroTurnCCWByPID(90,.5,motors,imu); //counterclockwise
-
-        //strafeToBlock = new driveState(4.1,.5,motors,s "left");
-
-        goToMiddleBlock = new driveState(.3,.5,motors,"forward");
-
-
-        startGrabBlock = new OnlyClaspState(clasp, 2, .75);
-
-        reposition = new GyroTurnCWByPID(6.5, 0.5, motors, imu); //clockwise
-
-        moveALittle = new driveState(6, .5, motors, "left");//added this to move a little
-
-        grabBlock = new OnlyClaspState(clasp,1,1);
-
-        getOffBlock = new driveState(22, .5 , motors, "right");
+        driveToFoundation = new driveState(-47, .4, motors, "backward");
 
         adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
 
-        bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "blue", .225, "forward");
+        foundationClasp = new OnlyClaspState(clasp, 2,  1.2);
 
 
+        parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "backward");
+
+        turnRightAngle = new GyroTurnCWByPID(90, .5, motors, imu);
+        driveBack = new timeState(5, .5, motors, "backward");
+
+        releaseClasp = new OnlyClaspState(clasp, 2, 0 );
+        straighten = new driveState(5,.5, motors, "left");//right
+        getOffWall = new driveState(2, .5 , motors, "right");//left
+        dragFoundationIn = new driveState(5, .5 , motors, "left");//right
 
 
 
         //Sequence
 
 
-        approachBlocks.setNextState(turnBlock);
-        turnBlock.setNextState(goToMiddleBlock);
-        goToMiddleBlock.setNextState(startGrabBlock);
-        //strafeToBlock.setNextState(grabBlock);
-        startGrabBlock.setNextState(reposition);
-        reposition.setNextState(moveALittle);
-        moveALittle.setNextState(grabBlock);
-        grabBlock.setNextState(getOffBlock);
-        getOffBlock.setNextState(adjustPulley);
-        adjustPulley.setNextState(bridgeWithBlock);
-        bridgeWithBlock.setNextState(null);
-
+        driveToFoundation.setNextState(foundationClasp);
+        // adjustPulley.setNextState(foundationClasp);
+        foundationClasp.setNextState(driveBack);
+        driveBack.setNextState(dragFoundationIn);
+        dragFoundationIn.setNextState(releaseClasp);
+        releaseClasp.setNextState(straighten);
+        straighten.setNextState(getOffWall);
+        //adjustPulley.setNextState(getOffWall);
+        getOffWall.setNextState(null);
+        //parkUnderBridge2.setNextState(adjustPulley);
 
     }
 
     @Override
     public void start(){
-        machine = new StateMachine(approachBlocks);
+        machine = new StateMachine(driveToFoundation);
 
     }
     private StateMachine machine;

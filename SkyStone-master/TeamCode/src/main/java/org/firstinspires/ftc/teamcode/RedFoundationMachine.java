@@ -97,7 +97,7 @@ public class RedFoundationMachine extends OpMode{
 
             driveToFoundation = new driveState(47, .4, motors, "forward");
 
-            adjustPulley = new adjustPulleyState(.25,.5 ,motors, rightHand, leftHand );
+            adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
 
             foundationClasp = new OnlyClaspState(clasp, 2,  1.2);
 
@@ -117,14 +117,16 @@ public class RedFoundationMachine extends OpMode{
           //Sequence
 
 
-            driveToFoundation.setNextState(adjustPulley);
-            adjustPulley.setNextState(foundationClasp);
+            driveToFoundation.setNextState(foundationClasp);
+            // adjustPulley.setNextState(foundationClasp);
             foundationClasp.setNextState(driveBack);
             driveBack.setNextState(dragFoundationIn);
             dragFoundationIn.setNextState(releaseClasp);
             releaseClasp.setNextState(straighten);
             straighten.setNextState(getOffWall);
+            //adjustPulley.setNextState(getOffWall);
             getOffWall.setNextState(parkUnderBridge2);
+            parkUnderBridge2.setNextState(adjustPulley);
 
 
         }

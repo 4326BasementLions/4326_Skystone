@@ -210,7 +210,7 @@ driveState moveBackFromBlock;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled      = false;
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "imu"); // lmao hardware what a joke
 
         imu.initialize(parameters);
 
