@@ -72,6 +72,8 @@ public class BlueBlockMachine extends OpMode{
     driveState goToMiddleBlock;
 
     adjustPulleyState adjustPulley;
+
+    GyroTurnCCWByPID around;
     //Setting up the order
     ColorSensor colorSensor;
     DcMotor leftFront;
@@ -139,6 +141,8 @@ public class BlueBlockMachine extends OpMode{
 
         adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
 
+        around = new GyroTurnCCWByPID(180, .5, motors, imu);
+
         bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "blue", .225, "forward");
 
 
@@ -157,7 +161,8 @@ public class BlueBlockMachine extends OpMode{
         moveALittle.setNextState(grabBlock);
         grabBlock.setNextState(getOffBlock);
         getOffBlock.setNextState(adjustPulley);
-        adjustPulley.setNextState(bridgeWithBlock);
+        adjustPulley.setNextState(around);
+        around.setNextState(bridgeWithBlock);
         bridgeWithBlock.setNextState(null);
 
 
