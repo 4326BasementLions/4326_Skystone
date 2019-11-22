@@ -50,9 +50,9 @@ public class BlueFoundationMachine extends OpMode{
     Servo rightHand;
     Servo clasp;
     BNO055IMU imu;
-
+    DistanceSensor distance;
     adjustPulleyState adjustPulley;
-    driveState driveToFoundation;
+    distanceState driveToFoundation;
     driveState straighten;
     driveState getOffWall;
     timeState driveBack;
@@ -61,6 +61,10 @@ public class BlueFoundationMachine extends OpMode{
     driveState dragFoundationIn;
     ColorSenseStopState parkUnderBridge2;
     GyroTurnCWByPID turnRightAngle;
+    distanceState strafeAwayFoundation;
+    distanceState strafeToFoundation;
+    OnlyClaspState grabFoundation;
+    driveState strafeToCorner;
 
     DcMotor leftFront;
     DcMotor rightFront;
@@ -68,9 +72,9 @@ public class BlueFoundationMachine extends OpMode{
     DcMotor rightBack;
 
     ColorSensor colorSensor;
-
     //Setting up the order
     DcMotor pulley;
+    DistanceSensor distance2;
 
 
     public void init(){
@@ -85,6 +89,8 @@ public class BlueFoundationMachine extends OpMode{
         leftBack = hardwareMap.dcMotor.get("left back");
         pulley = hardwareMap.dcMotor.get("pulley");
         clasp = hardwareMap.servo.get("clasp");
+        distance = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distance");
+        distance2 = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distance2");
         ArrayList<DcMotor> motors = new ArrayList<>();
         motors.add(rightFront);
         motors.add(leftFront);
@@ -95,7 +101,20 @@ public class BlueFoundationMachine extends OpMode{
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
-        driveToFoundation = new driveState(-47, .4, motors, "backward");
+
+        strafeToFoundation = new distanceState(distance2, 0.5, 0.5, motors, "right", "fc");
+
+        grabFoundation = new OnlyClaspState(clasp, 2, 1.2);
+
+        strafeToCorner = new driveState(49,.5, motors,"left");
+
+        ///
+        driveToFoundation = new distanceState(distance,.5, 1, motors, "forward", "fc");
+
+        strafeAwayFoundation = new distanceState(distance,.5, 1.5, motors, "right", "cf");
+
+
+        //driveToFoundation = new driveState(-47, .4, motors, "backward");
 
         adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
 
@@ -117,11 +136,15 @@ public class BlueFoundationMachine extends OpMode{
         //Sequence
 
 
-        driveToFoundation.setNextState(foundationClasp);
+        strafeToFoundation.setNextState(grabFoundation);
+        grabFoundation.setNextState(strafeToCorner);
+        strafeToCorner.setNextState(releaseClasp);
+        /*driveToFoundation.setNextState(strafeAwayFoundation);
+        strafeAwayFoundation.setNextState(foundationClasp);
         // adjustPulley.setNextState(foundationClasp);
         foundationClasp.setNextState(driveBack);
         driveBack.setNextState(dragFoundationIn);
-        dragFoundationIn.setNextState(releaseClasp);
+        dragFoundationIn.setNextState(releaseClasp);*/
         releaseClasp.setNextState(straighten);
         straighten.setNextState(getOffWall);
         //adjustPulley.setNextState(getOffWall);
@@ -133,7 +156,7 @@ public class BlueFoundationMachine extends OpMode{
 
     @Override
     public void start(){
-        machine = new StateMachine(driveToFoundation);
+        machine = new StateMachine(strafeToFoundation);
 
     }
     private StateMachine machine;

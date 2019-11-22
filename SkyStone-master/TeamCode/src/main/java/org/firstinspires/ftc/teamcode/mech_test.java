@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -67,7 +68,7 @@ public class        mech_test extends OpMode
 
     Servo leftHand;
 
-    Servo rightHand;
+    CRServo rightHand;
     Servo clasp;
     DcMotor leftFront;
     DcMotor rightFront;
@@ -98,16 +99,16 @@ public class        mech_test extends OpMode
         telemetry.addData("Status", "Initialized");
       //  telemetry.addData("leftpos", left.getPosition());
 
-        rightFront = hardwareMap.dcMotor.get("right front");
-        leftFront = hardwareMap.dcMotor.get("left front");
-        rightBack = hardwareMap.dcMotor.get("right back");
-        leftBack = hardwareMap.dcMotor.get("left back");
-        rightHand = hardwareMap.servo.get("right");
+//        rightFront = hardwareMap.dcMotor.get("right front");
+//        leftFront = hardwareMap.dcMotor.get("left front");
+//        rightBack = hardwareMap.dcMotor.get("right back");
+//        leftBack = hardwareMap.dcMotor.get("left back");
+        rightHand = hardwareMap.crservo.get("right");
         leftHand = hardwareMap.servo.get("left");
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+//        rightFront.setDirection(DcMotor.Direction.REVERSE);
+//        rightBack.setDirection(DcMotor.Direction.REVERSE);
         pulley = hardwareMap.dcMotor.get("pulley");
-        clasp = hardwareMap.servo.get("clasp");
+       // clasp = hardwareMap.servo.get("clasp");
     }
 
     /*
@@ -124,7 +125,7 @@ public class        mech_test extends OpMode
     public void start() {
 
         leftHand.setPosition(.5);
-        rightHand.setPosition(.5);
+       // rightHand.(.5);
 
         runtime.reset();
     }
@@ -143,40 +144,44 @@ public class        mech_test extends OpMode
         if(gamepad2.right_trigger>0){
 //        Unfortunately, using .getPos within the .setPos method lead to an infinite loop, as .getPos would constantly update
             x = x + .025;
-            z = z - .025;
+            //z = z - .025;
         }
         if(gamepad2.left_trigger>0){
             x = x - .025;
-            z = z + .025;
+           // z = z + .025;
 //
 
         }
         if(gamepad1.right_trigger>0){
-            n = n + .025;
+            //n = n + .025;
+            z = z - .025;
         }
         if(gamepad1.left_trigger>0){
-            n = n - .025;
+           // n = n - .025;
+            z = z + .025;
         }
 
-        if(x>1){
-            x=1;
-
-        }
-        if(x<0){
-            x=0;
-        }
+//        if(x>1){
+//            x=1;
+//
+//        }
+//        if(x<0){
+//            x=0;
+//        }
         if(z>1){
             z=1;
         }
         if(z<0){
             z=0;
         }
-        if(n>1){
-            n=1;
-        }
-        if(n<0){
-            n=0;
-        }
+//        if(n>1){
+//            n=1;
+//        }
+//        if(n<0){
+//            n=0;
+//        }
+
+
 
 //
 //if(gamepad2.right_stick_y>0){
@@ -195,26 +200,28 @@ public class        mech_test extends OpMode
 //        leftHand.setPosition(gamepad1.left_stick_y);
 //
 //        rightHand.setPosition(gamepad1.right_stick_y);
-        float drive = gamepad1.right_stick_y;
-        float strafe = gamepad1.right_stick_x;
-        float turn = gamepad1.left_stick_x;
 
-        float fl = drive - strafe + turn;
-        float fr = drive + strafe - turn;
-        float bl = drive + strafe + turn;
-        float br = drive - strafe - turn;
+//        float drive = gamepad1.right_stick_y;
+//        float strafe = gamepad1.right_stick_x;
+//        float turn = gamepad1.left_stick_x;
+//
+//        float fl = drive - strafe + turn;
+//        float fr = drive + strafe - turn;
+//        float bl = drive + strafe + turn;
+//        float br = drive - strafe - turn;
+//
+//        leftFront.setPower(fl);
+//        rightFront.setPower(fr);
+//        leftBack.setPower(bl);
+//        rightBack.setPower(br);
 
-        leftFront.setPower(fl);
-        rightFront.setPower(fr);
-        leftBack.setPower(bl);
-        rightBack.setPower(br);
 
 //
 
 
-leftHand.setPosition(x);
-rightHand.setPosition(z);
-clasp.setPosition(n);
+leftHand.setPosition(z);
+rightHand.setPower(-gamepad1.left_stick_y);
+//clasp.setPosition(n);
 
     }
 

@@ -27,17 +27,22 @@ public class distanceState implements StateMachine.State{
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
-    int Distance;
-    int Power;
+    double Distance;
+    double Power;
     State NextState;
+    String movement;
+    String direction;
 
-    public distanceState(int power, int distance, ArrayList<DcMotor> motor){
+    public distanceState(DistanceSensor SD, double power, double distance, ArrayList<DcMotor> motor, String Movement, String Direction){
         Distance = distance;
         leftFront = motor.get(0);
         rightFront = motor.get(1);
         leftBack = motor.get(2);
         rightBack = motor.get(3);
         Power = power;
+        movement = Movement;
+        direction = Direction;
+        sensorDistance = SD;
 
     }
     public void setNextState(State state) {
@@ -49,19 +54,86 @@ public class distanceState implements StateMachine.State{
     }
 
     public State update(){
-        while(sensorDistance.getDistance(DistanceUnit.INCH)>Distance){
+        if(direction.equals("fc")){
+        if(sensorDistance.getDistance(DistanceUnit.INCH)>Distance){
+            if(movement.equals("forward")){
             leftFront.setPower(Power);
             rightFront.setPower(Power);
             leftBack.setPower(Power);
             rightBack.setPower(Power);
             return this;
+            }
+            else if(movement.equals("backward")){
+                leftFront.setPower(-Power);
+                rightFront.setPower(-Power);
+                leftBack.setPower(-Power);
+                rightBack.setPower(-Power);
+                return this;
+            }
+            else if(movement.equals("left")){
+                leftBack.setPower(Power);
+                leftFront.setPower(-Power);
+                rightBack.setPower(-Power);
+                rightFront.setPower(Power);
+                return this;
+            }
+            else if(movement.equals("right")){
+                leftBack.setPower(-Power);
+                leftFront.setPower(Power);
+                rightBack.setPower(Power);
+                rightFront.setPower(-Power);
+                return this;
+            }
         }
+
         if(sensorDistance.getDistance(DistanceUnit.INCH)<=Distance){
             leftFront.setPower(0);
             rightFront.setPower(0);
             leftBack.setPower(0);
             rightBack.setPower(0);
             // return NextState;
+        }
+        return NextState;
+    }
+        else if(direction.equals("cf")){
+            if(sensorDistance.getDistance(DistanceUnit.INCH)<Distance){
+                if(movement.equals("forward")){
+                    leftFront.setPower(Power);
+                    rightFront.setPower(Power);
+                    leftBack.setPower(Power);
+                    rightBack.setPower(Power);
+                    return this;}
+                else if(movement.equals("backward")){
+                    leftFront.setPower(-Power);
+                    rightFront.setPower(-Power);
+                    leftBack.setPower(-Power);
+                    rightBack.setPower(-Power);
+                    return this;
+                }
+                else if(movement.equals("left")){
+                    leftBack.setPower(Power);
+                    leftFront.setPower(-Power);
+                    rightBack.setPower(-Power);
+                    rightFront.setPower(Power);
+                    return this;
+                }
+                else if(movement.equals("right")){
+                    leftBack.setPower(-Power);
+                    leftFront.setPower(Power);
+                    rightBack.setPower(Power);
+                    rightFront.setPower(-Power);
+                    return this;
+                }
+            }
+
+            if(sensorDistance.getDistance(DistanceUnit.INCH)>=Distance){
+                leftFront.setPower(0);
+                rightFront.setPower(0);
+                leftBack.setPower(0);
+                rightBack.setPower(0);
+                // return NextState;
+            }
+
         }
         return NextState;
     }

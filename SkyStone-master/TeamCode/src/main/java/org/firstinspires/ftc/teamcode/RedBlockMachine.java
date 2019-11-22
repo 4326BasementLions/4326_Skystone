@@ -61,15 +61,15 @@ public class RedBlockMachine extends OpMode{
     movePulleyState moveDown;
     movePulleyState moveUp;
 
-    driveState moveALittle;
-    GyroTurnCWByPID reposition;
+    distanceState moveALittle;
+  //  GyroTurnCWByPID reposition;
 
     OnlyClaspState grabBlock;
 
     OnlyClaspState startGrabBlock;
 
     ColorSenseStopState bridgeWithBlock;
-    driveState goToMiddleBlock;
+   // driveState goToMiddleBlock;
 
     adjustPulleyState adjustPulley;
     ColorSensor colorSensor;
@@ -77,6 +77,14 @@ public class RedBlockMachine extends OpMode{
     DcMotor rightFront;
     DcMotor leftBack;
     DcMotor rightBack;
+
+    driveState leaveCorner;
+
+
+    DistanceSensor distance;
+    //GyroTurnCCWByPID turn1;
+    distanceState approach;
+
     //Setting up the order
 
     DcMotor pulley;
@@ -119,7 +127,9 @@ public class RedBlockMachine extends OpMode{
         motors.add(leftBack);
         motors.add(pulley);
         //okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
+        //turn1 = new GyroTurnCCWByPID(90, 0.5, motors, imu);
 
+        approach = new distanceState(distance, 0.5, 1 /*need to measure how far away from the blocks to stop*/, motors, "forward", "fc");
 
         approachBlocks = new driveState(24.1,.5,motors,"forward");
 
@@ -127,14 +137,14 @@ public class RedBlockMachine extends OpMode{
 
         //strafeToBlock = new driveState(4.1,.5,motors, "left");
 
-        goToMiddleBlock = new driveState(.3,.5,motors,"forward");
+      //  goToMiddleBlock = new driveState(.3,.5,motors,"forward");
 
 
         startGrabBlock = new OnlyClaspState(clasp, 2, .75);
 
-        reposition = new GyroTurnCWByPID(6.5, 0.5, motors, imu); //clockwise
+    //    reposition = new GyroTurnCWByPID(6.5, 0.5, motors, imu); //clockwise
 
-        moveALittle = new driveState(6, .5, motors, "left");//added this to move a little
+        moveALittle = new distanceState(distance, .5, 0.5, motors, "right", "fc");//added this to move a little
 
 
         grabBlock = new OnlyClaspState(clasp,1,1);
@@ -145,22 +155,17 @@ public class RedBlockMachine extends OpMode{
 
         bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "blue", .225, "backward");
 
-
-
-
-
-
-
+        leaveCorner = new driveState(20 /*need to measure how far away from the blocks to stop*/, 0.5, motors, "right");
 
         //Sequence
 
 
-        approachBlocks.setNextState(turnBlock);
-        turnBlock.setNextState(goToMiddleBlock);
-        goToMiddleBlock.setNextState(startGrabBlock);
+        //turn1.setNextState(approach);
+        approach.setNextState(startGrabBlock);
+     //   goToMiddleBlock.setNextState(startGrabBlock);
         //strafeToBlock.setNextState(grabBlock);
-        startGrabBlock.setNextState(reposition);
-        reposition.setNextState(moveALittle);
+        startGrabBlock.setNextState(moveALittle);
+  //      reposition.setNextState(moveALittle);
         moveALittle.setNextState(grabBlock);
         grabBlock.setNextState(getOffBlock);
         getOffBlock.setNextState(adjustPulley);
@@ -172,7 +177,7 @@ public class RedBlockMachine extends OpMode{
 
     @Override
     public void start(){
-        machine = new StateMachine(approachBlocks);
+        machine = new StateMachine(approach);
 
     }
     private StateMachine machine;

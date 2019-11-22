@@ -46,13 +46,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 @Autonomous(name="RedFoundation", group="Iterative Opmode")
 public class RedFoundationMachine extends OpMode{
 
+
     Servo leftHand;
     Servo rightHand;
     Servo clasp;
     BNO055IMU imu;
 
     adjustPulleyState adjustPulley;
-    driveState driveToFoundation;
+  //  driveState driveToFoundation;
+    distanceState driveToFoundation;
+    distanceState strafeAwayFoundation;
     driveState straighten;
     driveState getOffWall;
     timeState driveBack;
@@ -61,6 +64,8 @@ public class RedFoundationMachine extends OpMode{
     driveState dragFoundationIn;
     ColorSenseStopState parkUnderBridge2;
     GyroTurnCCWByPID turnRightAngle;
+driveState littleLeft;
+driveState littleForward;
 
     DcMotor leftFront;
     DcMotor rightFront;
@@ -68,8 +73,10 @@ public class RedFoundationMachine extends OpMode{
     DcMotor rightBack;
 
     ColorSensor colorSensor;
+    DistanceSensor distance;
+    DistanceSensor distance2;
 
-            //Setting up the order
+    //Setting up the order
             DcMotor pulley;
 
 
@@ -85,6 +92,9 @@ public class RedFoundationMachine extends OpMode{
             leftBack = hardwareMap.dcMotor.get("left back");
             pulley = hardwareMap.dcMotor.get("pulley");
             clasp = hardwareMap.servo.get("clasp");
+            distance = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distance");
+            distance2 = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distance2");
+
             ArrayList<DcMotor> motors = new ArrayList<>();
             motors.add(rightFront);
             motors.add(leftFront);
@@ -95,7 +105,17 @@ public class RedFoundationMachine extends OpMode{
             rightFront.setDirection(DcMotor.Direction.REVERSE);
             rightBack.setDirection(DcMotor.Direction.REVERSE);
 
-            driveToFoundation = new driveState(47, .4, motors, "forward");
+            //driveToFoundation = new driveState(47, .4, motors, "forward");
+
+            driveToFoundation = new distanceState(distance,1, 1, motors, "forward", "fc");
+
+            strafeAwayFoundation = new distanceState(distance,.5, 1.5, motors, "left", "cf");
+
+            littleLeft = new driveState(4.5, .5, motors, "left");
+
+            littleForward = new driveState(5, .5, motors, "forward");
+
+            //Add encoder strafe state if our sensor is not in the corner of our bot
 
             adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
 
@@ -117,8 +137,11 @@ public class RedFoundationMachine extends OpMode{
           //Sequence
 
 
-            driveToFoundation.setNextState(foundationClasp);
+            driveToFoundation.setNextState(strafeAwayFoundation);
+            strafeAwayFoundation.setNextState(littleLeft);
+            littleLeft.setNextState(littleForward);
             // adjustPulley.setNextState(foundationClasp);
+            littleForward.setNextState(foundationClasp);
             foundationClasp.setNextState(driveBack);
             driveBack.setNextState(dragFoundationIn);
             dragFoundationIn.setNextState(releaseClasp);
