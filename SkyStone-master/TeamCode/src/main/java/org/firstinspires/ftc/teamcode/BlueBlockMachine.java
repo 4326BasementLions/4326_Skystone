@@ -43,6 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
+@Disabled
 @Autonomous(name="BlueBlockMachine", group="Iterative Opmode")
 public class BlueBlockMachine extends OpMode{
 

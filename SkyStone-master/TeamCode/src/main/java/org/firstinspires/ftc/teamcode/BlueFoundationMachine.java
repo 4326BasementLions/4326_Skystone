@@ -43,6 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
+@Disabled
 @Autonomous(name="BlueFoundation", group="Iterative Opmode")
 public class BlueFoundationMachine extends OpMode{
 
@@ -50,7 +51,7 @@ public class BlueFoundationMachine extends OpMode{
     Servo rightHand;
     Servo clasp;
     BNO055IMU imu;
-    DistanceSensor distance;
+    ModernRoboticsI2cRangeSensor distance;
     adjustPulleyState adjustPulley;
     distanceState driveToFoundation;
     driveState straighten;
@@ -74,7 +75,7 @@ public class BlueFoundationMachine extends OpMode{
     ColorSensor colorSensor;
     //Setting up the order
     DcMotor pulley;
-    DistanceSensor distance2;
+    ModernRoboticsI2cRangeSensor distance2;
 
 
     public void init(){
@@ -101,12 +102,14 @@ public class BlueFoundationMachine extends OpMode{
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
+        //plan: start sideways, strafe to foundation, grab, drag foundation back to corner, park
 
-        strafeToFoundation = new distanceState(distance2, 0.5, 0.5, motors, "right", "fc");
 
-        grabFoundation = new OnlyClaspState(clasp, 2, 1.2);
+        strafeToFoundation = new distanceState(distance2, 0.5, 0.5, motors, "right", "fc"); //strafes to the foundation
 
-        strafeToCorner = new driveState(49,.5, motors,"left");
+        grabFoundation = new OnlyClaspState(clasp, 2, 1.2); //grabs foundation
+
+        strafeToCorner = new driveState(49,.5, motors,"left"); //strafes to the corner
 
         ///
         driveToFoundation = new distanceState(distance,.5, 1, motors, "forward", "fc");
@@ -116,7 +119,7 @@ public class BlueFoundationMachine extends OpMode{
 
         //driveToFoundation = new driveState(-47, .4, motors, "backward");
 
-        adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
+        adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand ); //adjusts pulley mechanism so we can fit under the bridge
 
         foundationClasp = new OnlyClaspState(clasp, 2,  1.2);
 

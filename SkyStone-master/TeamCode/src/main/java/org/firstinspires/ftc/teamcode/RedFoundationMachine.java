@@ -54,6 +54,7 @@ public class RedFoundationMachine extends OpMode{
 
     adjustPulleyState adjustPulley;
   //  driveState driveToFoundation;
+    driveState Step1;
     distanceState driveToFoundation;
     distanceState strafeAwayFoundation;
     driveState straighten;
@@ -66,6 +67,8 @@ public class RedFoundationMachine extends OpMode{
     GyroTurnCCWByPID turnRightAngle;
 driveState littleLeft;
 driveState littleForward;
+GyroTurnCWByPID turnLeftAngle;
+driveState strafeToFoundation;
 
     DcMotor leftFront;
     DcMotor rightFront;
@@ -73,8 +76,8 @@ driveState littleForward;
     DcMotor rightBack;
 
     ColorSensor colorSensor;
-    DistanceSensor distance;
-    DistanceSensor distance2;
+    /*ModernRoboticsI2cRangeSensor*/ DistanceSensor distance;
+    /*ModernRoboticsI2cRangeSensor*/ DistanceSensor distance2;
 
     //Setting up the order
             DcMotor pulley;
@@ -92,8 +95,8 @@ driveState littleForward;
             leftBack = hardwareMap.dcMotor.get("left back");
             pulley = hardwareMap.dcMotor.get("pulley");
             clasp = hardwareMap.servo.get("clasp");
-            distance = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distance");
-            distance2 = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distance2");
+            distance = hardwareMap.get(DistanceSensor.class, "distance");//(ModernRoboticsI2cRangeSensor.class, "distance");
+            distance2 = hardwareMap.get(DistanceSensor.class, "distance2");//(ModernRoboticsI2cRangeSensor.class, "distance2");
 
             ArrayList<DcMotor> motors = new ArrayList<>();
             motors.add(rightFront);
@@ -105,58 +108,80 @@ driveState littleForward;
             rightFront.setDirection(DcMotor.Direction.REVERSE);
             rightBack.setDirection(DcMotor.Direction.REVERSE);
 
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+            parameters.mode                = BNO055IMU.SensorMode.IMU;
+            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.loggingEnabled      = false;
+
+            imu = hardwareMap.get(BNO055IMU.class, "imu"); // lmao hardware what a joke
+
+            imu.initialize(parameters);
+
             //driveToFoundation = new driveState(47, .4, motors, "forward");
 
-            driveToFoundation = new distanceState(distance,1, 1, motors, "forward", "fc");
-
-            strafeAwayFoundation = new distanceState(distance,.5, 1.5, motors, "left", "cf");
-
-            littleLeft = new driveState(4.5, .5, motors, "left");
-
-            littleForward = new driveState(5, .5, motors, "forward");
-
-            //Add encoder strafe state if our sensor is not in the corner of our bot
-
-            adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand );
-
-            foundationClasp = new OnlyClaspState(clasp, 2,  1.2);
+            //plan: drive to foundation, move to side of foundation, drive up to the side of the foundation, grab, drag back to corner, park
 
 
-            parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "forward");
-
+            Step1 = new driveState(22, .25, motors, "forward");
+            driveToFoundation = new distanceState(distance,.5, 12, motors, "forward", "fc"); //drives to the foundation
             turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
-            driveBack = new timeState(5, .5, motors, "backward");
+//
+            //turnLeftAngle = new GyroTurnCWByPID(90, .5, motors, imu);
+            strafeToFoundation = new driveState(4,.5, motors, "left");
 
-            releaseClasp = new OnlyClaspState(clasp, 2, 0 );
-            straighten = new driveState(5,.5, motors, "right");
-            getOffWall = new driveState(2, .5 , motors, "left");
-            dragFoundationIn = new driveState(5, .5 , motors, "right");
+//            strafeAwayFoundation = new distanceState(distance,.5, 1.5, motors, "left", "cf"); //strafes until it can no longer see the foundation (finds the edge)
+//
+//            littleLeft = new driveState(4.5, .5, motors, "left"); //readjusts bot's position – since sensor is not on the corner of the bot
+littleForward = new driveState(5, .5, motors, "backward");
+//            adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand ); //adjusts pulley mechanism to lower so we can go under the bridge
+
+            foundationClasp = new OnlyClaspState(clasp, 2,  1.2); //grabs foundation
+
+
+//            parkUnderBridge2 = new ColorSenseStopState(motors, colorSensor, "red", .225, "forward"); //parks
+//
+//            turnRightAngle = new GyroTurnCCWByPID(90, .5, motors, imu);
+//            driveBack = new timeState(5, .5, motors, "backward");
+//
+//            releaseClasp = new OnlyClaspState(clasp, 2, 0 );
+//            straighten = new driveState(5,.5, motors, "right");
+//            getOffWall = new driveState(2, .5 , motors, "left");
+            dragFoundationIn = new driveState(30, .8 , motors, "right");
 
 
 
           //Sequence
 
 
-            driveToFoundation.setNextState(strafeAwayFoundation);
-            strafeAwayFoundation.setNextState(littleLeft);
-            littleLeft.setNextState(littleForward);
-            // adjustPulley.setNextState(foundationClasp);
+           Step1.setNextState(driveToFoundation);
+            driveToFoundation.setNextState(turnRightAngle);
+            turnRightAngle.setNextState(strafeToFoundation);
+            strafeToFoundation.setNextState(littleForward);
             littleForward.setNextState(foundationClasp);
-            foundationClasp.setNextState(driveBack);
-            driveBack.setNextState(dragFoundationIn);
-            dragFoundationIn.setNextState(releaseClasp);
-            releaseClasp.setNextState(straighten);
-            straighten.setNextState(getOffWall);
-            //adjustPulley.setNextState(getOffWall);
-            getOffWall.setNextState(parkUnderBridge2);
-            parkUnderBridge2.setNextState(adjustPulley);
+            foundationClasp.setNextState(dragFoundationIn);
+
+
+//            strafeAwayFoundation.setNextState(littleLeft);
+//            littleLeft.setNextState(littleForward);
+//            // adjustPulley.setNextState(foundationClasp);
+//            littleForward.setNextState(foundationClasp);
+//            foundationClasp.setNextState(driveBack);
+//            driveBack.setNextState(dragFoundationIn);
+//            dragFoundationIn.setNextState(releaseClasp);
+//            releaseClasp.setNextState(straighten);
+//            straighten.setNextState(getOffWall);
+//            //adjustPulley.setNextState(getOffWall);
+//            getOffWall.setNextState(parkUnderBridge2);
+//            parkUnderBridge2.setNextState(adjustPulley);
 
 
         }
 
     @Override
     public void start(){
-        machine = new StateMachine(driveToFoundation);
+        machine = new StateMachine(Step1);
 
     }
     private StateMachine machine;

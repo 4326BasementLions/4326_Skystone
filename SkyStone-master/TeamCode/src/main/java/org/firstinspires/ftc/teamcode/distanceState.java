@@ -19,6 +19,7 @@ import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class distanceState implements StateMachine.State{

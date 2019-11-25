@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -37,7 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
- * {@link SensorMRRangeSensor} illustrates how to use the Modern Robotics
+ * {@link RangeSensorTEst} illustrates how to use the Modern Robotics
  * Range Sensor.
  *
  * The op mode assumes that the range sensor is configured with a name of "sensor_range".
@@ -47,16 +47,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  *
  * @see <a href="http://modernroboticsinc.com/range-sensor">MR Range Sensor</a>
  */
-@TeleOp(name = "Sensor: MR range sensor2", group = "Sensor")
-//@Disabled   // comment out or remove this line to enable this opmode
-public class SensorMRRangeSensor extends LinearOpMode {
+@TeleOp(name = "Sensor: MR range sensor", group = "Sensor")
+public class RangeSensorTEst extends LinearOpMode {
 
     ModernRoboticsI2cRangeSensor rangeSensor;
 
     @Override public void runOpMode() {
 
         // get a reference to our compass
-        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "sensor_range");
+        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "distance");
 
         // wait for the start button to be pressed
         waitForStart();

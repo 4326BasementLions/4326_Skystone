@@ -43,6 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
+@Disabled
 @Autonomous(name="RedBlockMachine", group="Iterative Opmode")
 public class RedBlockMachine extends OpMode{
 
@@ -81,7 +82,8 @@ public class RedBlockMachine extends OpMode{
     driveState leaveCorner;
 
 
-    DistanceSensor distance;
+
+DistanceSensor distance;
     //GyroTurnCCWByPID turn1;
     distanceState approach;
 
@@ -128,6 +130,8 @@ public class RedBlockMachine extends OpMode{
         motors.add(pulley);
         //okTest = new JustSkyStoneNavigationState(motors, "no", cameraMonitorViewId);
         //turn1 = new GyroTurnCCWByPID(90, 0.5, motors, imu);
+
+        //plan: start sideways, strafe to blocks, clasp down, drive further into the blocks (ensure they are grabbed), drag blocks and park
 
         approach = new distanceState(distance, 0.5, 1 /*need to measure how far away from the blocks to stop*/, motors, "forward", "fc");
 
