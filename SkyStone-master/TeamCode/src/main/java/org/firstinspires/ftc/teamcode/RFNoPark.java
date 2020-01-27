@@ -42,7 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-
+@Disabled
 @Autonomous(name="RedFoundationNOPARK", group="Iterative Opmode")
 public class RFNoPark extends OpMode{
 

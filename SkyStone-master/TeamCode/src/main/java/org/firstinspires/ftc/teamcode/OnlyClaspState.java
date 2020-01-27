@@ -17,18 +17,21 @@ public class OnlyClaspState implements State {
     Servo arm;
     State NextState;
     ElapsedTime mRuntime = new ElapsedTime();
-    Double time;
+    int time;
     double Power;
     String Movement;
     double pos;
+
     // private StateMachine.State NextState;
-    public OnlyClaspState( Servo clasp, double sec, double position){
+    public OnlyClaspState( Servo clasp, int sec, double position){
 
         arm = clasp;
         time = sec;
         mRuntime.reset();
 
         pos = position;
+
+
     }
     @Override
     public void start() {
@@ -47,7 +50,10 @@ public class OnlyClaspState implements State {
             return this;
         }
         //(1000);
+
         return NextState;
+
+
 
 
 

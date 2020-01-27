@@ -81,7 +81,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * is explained below.
  */
 
-
+//@Disabled
 @TeleOp(name="SKYSTONE Vuforia Nav", group ="Concept")
 public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
 
@@ -137,6 +137,7 @@ public class ConceptVuforiaSkyStoneNavigation extends LinearOpMode {
     private float phoneZRotate    = 0;
 
     @Override public void runOpMode() {
+
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);

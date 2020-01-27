@@ -42,7 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-
+@Disabled
 @Autonomous(name="RedFoundation", group="Iterative Opmode")
 public class RedFoundationMachine extends OpMode{
 
@@ -134,7 +134,7 @@ driveState strafeToFoundation;
 //            strafeAwayFoundation = new distanceState(distance,.5, 1.5, motors, "left", "cf"); //strafes until it can no longer see the foundation (finds the edge)
 //
 //            littleLeft = new driveState(4.5, .5, motors, "left"); //readjusts bot's position – since sensor is not on the corner of the bot
-littleForward = new driveState(5, .5, motors, "backward");
+              littleForward = new driveState(5, .5, motors, "backward");
 //            adjustPulley = new adjustPulleyState(.25,-.5 ,motors, rightHand, leftHand ); //adjusts pulley mechanism to lower so we can go under the bridge
 
             foundationClasp = new OnlyClaspState(clasp, 2,  1.2); //grabs foundation

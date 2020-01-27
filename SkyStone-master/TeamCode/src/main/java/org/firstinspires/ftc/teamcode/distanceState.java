@@ -56,7 +56,7 @@ public class distanceState implements StateMachine.State{
 
     public State update(){
         if(direction.equals("fc")){
-        if(sensorDistance.getDistance(DistanceUnit.INCH)>Distance){
+        if(sensorDistance.getDistance(DistanceUnit.CM)>Distance){
             if(movement.equals("forward")){
             leftFront.setPower(Power);
             rightFront.setPower(Power);
@@ -87,7 +87,7 @@ public class distanceState implements StateMachine.State{
             }
         }
 
-        if(sensorDistance.getDistance(DistanceUnit.INCH)<=Distance){
+        if(sensorDistance.getDistance(DistanceUnit.CM)<=Distance){
             leftFront.setPower(0);
             rightFront.setPower(0);
             leftBack.setPower(0);
@@ -97,7 +97,7 @@ public class distanceState implements StateMachine.State{
         return NextState;
     }
         else if(direction.equals("cf")){
-            if(sensorDistance.getDistance(DistanceUnit.INCH)<Distance){
+            if(sensorDistance.getDistance(DistanceUnit.CM)<Distance){
                 if(movement.equals("forward")){
                     leftFront.setPower(Power);
                     rightFront.setPower(Power);
@@ -127,7 +127,7 @@ public class distanceState implements StateMachine.State{
                 }
             }
 
-            if(sensorDistance.getDistance(DistanceUnit.INCH)>=Distance){
+            if(sensorDistance.getDistance(DistanceUnit.CM)>=Distance){
                 leftFront.setPower(0);
                 rightFront.setPower(0);
                 leftBack.setPower(0);

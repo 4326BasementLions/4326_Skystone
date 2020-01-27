@@ -98,7 +98,7 @@ public class BlueBlockMachine extends OpMode{
         imu.initialize(parameters);
 
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        JustSkyStoneNavigationState okTest;
+        //JustSkyStoneNavigationState okTest;
 
        // int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 

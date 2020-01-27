@@ -45,7 +45,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
 
-
+@Disabled
 @Autonomous(name="State Machine Test 2.77", group="Iterative Opmode")
 public class ConceptStateMachine extends OpMode
 {
@@ -124,7 +124,7 @@ driveState moveBackFromBlock;
     driveState moveALittle;
     GyroTurnCWByPID reposition;
 
-    JustSkyStoneNavigationState okTest;
+    //JustSkyStoneNavigationState okTest;
 
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     private static final boolean PHONE_IS_PORTRAIT = false  ;
@@ -284,7 +284,7 @@ bridgeWithBlock = new ColorSenseStopState(motors, colorSensor, "red", .225, "bac
 
 
 
-okTest.setNextState(null);
+//okTest.setNextState(null);
 //open.setNextState(mo);
 /*moveDown.setNextState(close);
 close.setNextState(moveUp);
@@ -333,7 +333,7 @@ open.setNextState(null);
 
     @Override
     public void start(){
-        machine = new StateMachine(okTest);
+       // machine = new StateMachine(okTest);
 //        while (machine.currentState().equals(okTest)){
 ////            mRuntime.reset();
 ////            if(mRuntim){

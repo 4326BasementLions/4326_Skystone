@@ -49,9 +49,9 @@ import org.firstinspires.ftc.teamcode.StateMachine.State;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "BLUE - TrueFoundation", group = "Iterative Opmode")
+@Autonomous(name = "RED - TrueFoundation", group = "Iterative Opmode")
 
-public class BlueTouchFoundationMachine extends OpMode {
+public class RedTouchFoundationMachine extends OpMode {
     DcMotor leftFront;
     DcMotor rightFront;
     DcMotor leftBack;
@@ -61,7 +61,7 @@ public class BlueTouchFoundationMachine extends OpMode {
 
     Servo skystone;
 
-    // Servo foundationRight;
+   // Servo foundationRight;
 
     DigitalChannel touchSensor;
 
@@ -120,7 +120,7 @@ public class BlueTouchFoundationMachine extends OpMode {
 
         faceBridge = new GyroTurnCCWByPID(90, .5, motors, imu); //faces bridge
 
-        finals = new ColorSenseStopState(motors, colorSensor, "blue", .5, "forward"); //drives and parks under the bridge
+        finals = new ColorSenseStopState(motors, colorSensor, "red", .5, "forward"); //drives and parks under the bridge
 
 
         //set up the sequence

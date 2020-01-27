@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.StateMachine.State; //necessary
 import java.util.ArrayList;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class timeState implements StateMachine.State {
+public class timeState implements State {
 
     DcMotor leftFront;
     DcMotor rightFront;
@@ -60,7 +60,7 @@ public class timeState implements StateMachine.State {
     }
 
     @Override
-    public StateMachine.State update() {
+    public State update() {
 
 
         while (mRuntime.seconds() < Time) {

@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 
-@Disabled
+
 @Autonomous(name="RedBlockMachine", group="Iterative Opmode")
 public class RedBlockMachine extends OpMode{
 
@@ -107,7 +107,7 @@ DistanceSensor distance;
         imu.initialize(parameters);
 
         colorSensor = hardwareMap.colorSensor.get("colorSensor");
-        JustSkyStoneNavigationState okTest;
+      //  JustSkyStoneNavigationState okTest;
 
         //int cameraMonitorViewId = this.hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
@@ -165,7 +165,7 @@ DistanceSensor distance;
 
 
         //turn1.setNextState(approach);
-        approach.setNextState(startGrabBlock);
+        approach.setNextState(null);
      //   goToMiddleBlock.setNextState(startGrabBlock);
         //strafeToBlock.setNextState(grabBlock);
         startGrabBlock.setNextState(moveALittle);
