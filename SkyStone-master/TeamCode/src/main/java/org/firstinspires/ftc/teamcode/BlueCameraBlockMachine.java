@@ -232,7 +232,7 @@ public class BlueCameraBlockMachine extends OpMode {
         goforth.setNextState(goback);
 
         //second machine
-        faceBlock = new GyroTurnCCWByPID(90, .5, motors, imu); //maybe need another drivestate to approach the blocks
+        faceBlock = new GyroTurnCCWByPID(90, .5, motors, imu);
         grabbbbbbbbbbb = new OnlyClaspState(skystone, 2, 0);
         goBusterst = new driveState(10, .5, motors, "backward");
         facebridge = new GyroTurnCWByPID(90, .5, motors, imu);
