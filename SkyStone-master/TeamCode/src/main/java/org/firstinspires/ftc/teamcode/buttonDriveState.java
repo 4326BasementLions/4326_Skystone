@@ -20,16 +20,18 @@ public class buttonDriveState implements State {
     DcMotor backLeft;
     double power;
     DigitalChannel touchSensor;
+    String direction;
 
     State NextState;
 
-    public buttonDriveState(ArrayList<DcMotor> mtr, double pwr, DigitalChannel touch){
+    public buttonDriveState(ArrayList<DcMotor> mtr, double pwr, DigitalChannel touch, String dir){
         frontRight = mtr.get(0);
         frontLeft = mtr.get(1);
         backRight = mtr.get(2);
         backLeft = mtr.get(3);
         power = pwr;
         touchSensor = touch;
+        direction = dir;
 
     }
 
@@ -47,12 +49,25 @@ public class buttonDriveState implements State {
 
     @Override
     public State update() {
-        if(touchSensor.getState()==true){
-            frontRight.setPower(power);
-            frontLeft.setPower(power);
-            backRight.setPower(power);
-            backLeft.setPower(power);
+
+
+        if (touchSensor.getState() == true) {
+            if (direction.equals("f")) {
+                frontRight.setPower(power);
+                frontLeft.setPower(power);
+                backRight.setPower(power);
+                backLeft.setPower(power);
+                return this;
+            }
+            if (direction.equals("b")) {
+                frontRight.setPower(-power);
+                frontLeft.setPower(-power);
+                backRight.setPower(-power);
+                backLeft.setPower(-power);
+                return this;
+            }
             return this;
+
 
         } else {
             frontRight.setPower(0);
@@ -61,9 +76,6 @@ public class buttonDriveState implements State {
             backLeft.setPower(0);
             return NextState;
         }
-
-
-
 
     }
 }
