@@ -110,7 +110,7 @@ public class RedTouchFoundationMachine extends OpMode {
 
         //State set up
 
-        approach = new buttonDriveState(motors, .5, touchSensor); //drives forward until the button is pressed
+        approach = new buttonDriveState(motors, .5, touchSensor, "b"); //drives forward until the button is pressed
 
         grabbbygrab = new OnlyClaspState( foundation, 1, 0); //grabby grabs the foundation
 
