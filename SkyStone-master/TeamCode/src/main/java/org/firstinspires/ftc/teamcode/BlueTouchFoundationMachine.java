@@ -49,7 +49,7 @@ import org.firstinspires.ftc.teamcode.StateMachine.State;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "BLUE - TrueFoundation", group = "Iterative Opmode")
+@Autonomous(name = "BLUE - TrueFoundation 1.3", group = "Iterative Opmode")
 
 public class BlueTouchFoundationMachine extends OpMode {
     DcMotor leftFront;
@@ -79,6 +79,10 @@ public class BlueTouchFoundationMachine extends OpMode {
 
     driveState backUp;
 
+    GyroTurnCCWByPID firsTurn;
+
+
+
     OnlyClaspState letGoGo;
 
     GyroTurnCCWByPID faceBridge;
@@ -98,8 +102,9 @@ public class BlueTouchFoundationMachine extends OpMode {
         motors.add(rightBack);
         motors.add(leftBack);
 
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE); //leftFront
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         touchSensor = hardwareMap.get(DigitalChannel.class, "sensor_digital"); //configure as digital device, not a REV touch sensor!!!
         colorSensor = hardwareMap.colorSensor.get("color_sensor");
@@ -107,19 +112,35 @@ public class BlueTouchFoundationMachine extends OpMode {
         foundation = hardwareMap.servo.get("foundation");
         //foundationRight = hardwareMap.servo.get("foundation_right");
 
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled      = false;
+
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        imu.initialize(parameters);
+
 
         //State set up
 
-        approach = new buttonDriveState(motors, .5, touchSensor); //drives forward until the button is pressed
+        approach = new buttonDriveState(motors, .3, touchSensor,"b"); //drives forward until the button is pressed
 
-        grabbbygrab = new OnlyClaspState( foundation, 1, 0); //grabby grabs the foundation
+        grabbbygrab = new OnlyClaspState( foundation, 3, 1); //grabby grabs the foundation
 
-        backUp = new driveState(30, .5, motors, "backward"); //drives back into parking area
+        backUp = new driveState(30, .7, motors, "forward"); //drives back into parking area
 
-        letGoGo = new OnlyClaspState( foundation, 1, 1); //lets go of the foundation
+        firsTurn = new GyroTurnCCWByPID(90, .5, motors, imu);
 
-        faceBridge = new GyroTurnCCWByPID(90, .5, motors, imu); //faces bridge
 
+//
+//        letGoGo = new OnlyClaspState( foundation, 1, 1); //lets go of the foundation
+//
+//        faceBridge = new GyroTurnCCWByPID(90, .5, motors, imu); //faces bridge
+//
         finals = new ColorSenseStopState(motors, colorSensor, "blue", .5, "forward"); //drives and parks under the bridge
 
 
@@ -127,9 +148,11 @@ public class BlueTouchFoundationMachine extends OpMode {
 
         approach.setNextState(grabbbygrab);
         grabbbygrab.setNextState(backUp);
-        backUp.setNextState(letGoGo);
-        letGoGo.setNextState(faceBridge);
-        faceBridge.setNextState(finals);
+        backUp.setNextState(firsTurn);
+        firsTurn.setNextState(null);
+//        letGoGo.setNextState(faceBridge);
+//        faceBridge.setNextState(finals);
+        finals.setNextState(null);
 
         //yay!
 
