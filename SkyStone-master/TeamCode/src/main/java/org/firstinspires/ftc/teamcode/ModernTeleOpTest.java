@@ -30,9 +30,13 @@ public class ModernTeleOpTest extends OpMode {
 
     double grabPos = 0.5;
     int grabState = 0;
+    int twistState = 0;
     int grabCooldown = 0;
+    int twistCooldown = 0;
 
     boolean grip = false;
+
+
 
 
     @Override
@@ -46,6 +50,7 @@ public class ModernTeleOpTest extends OpMode {
         //foundationRight = hardwareMap.servo.get("foundation_right");
 
         pulley = hardwareMap.dcMotor.get("pulley");
+        //ADD OTHER SERVO FOR BLOCK DRAGGING
         twist = hardwareMap.servo.get("twist");  //not configged yet
         grab = hardwareMap.servo.get("grab"); //not configged yet
 
@@ -71,9 +76,9 @@ public class ModernTeleOpTest extends OpMode {
 
         //GAMEPAD 1
         //Drive train
-        float drive = gamepad1.right_stick_y;
-        float strafe = gamepad1.right_stick_x;
-        float turn = gamepad1.left_stick_x;
+        float drive = gamepad1.right_stick_x;
+        float strafe = -gamepad1.left_stick_x;
+        float turn = gamepad1.left_stick_y;
 
         float fl = drive - strafe + turn;
         float fr = drive + strafe - turn;
@@ -112,16 +117,25 @@ public class ModernTeleOpTest extends OpMode {
         }
 ////
 ////        //Pulley
-        pulley.setPower(gamepad2.right_stick_y/4);
+        pulley.setPower(gamepad2.right_stick_y/2);
 ////
 ////        //Grab
         if (grabCooldown == 0 && gamepad2.a) {
-            grabState ^= 1;
+            grabState ^= 1;  //how does this shift grabState?
             grabPos = grabState;
             grab.setPosition(grabPos);
-            grabCooldown = 400;
-        } else if (grabCooldown > 0) {
+            //changed grabCooldown from 400 to 200s
+            grabCooldown = 200;
+        } else if (grabCooldown > 0){
             grabCooldown--;
+        }
+
+        if(twistCooldown == 0 && gamepad2.x){
+            twistState ^=1;
+            twist.setPosition(twistState);
+            twistCooldown = 400;
+        }else if (twistCooldown > 0) {
+            twistCooldown--;
         }
 
         if (gamepad2.b) {
@@ -132,5 +146,11 @@ public class ModernTeleOpTest extends OpMode {
         telemetry.addData("grab cd", grabCooldown);
         telemetry.addData("grab state", grabState);
         telemetry.update();
+    }
+
+    public void flipBlock() {
+        grab.setPosition(0);
+
+        grab.setPosition(.5);
     }
 }
