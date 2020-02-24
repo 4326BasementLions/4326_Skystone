@@ -60,13 +60,13 @@ public class GyroTurnCWByPID implements StateMachine.State {
     public GyroTurnCWByPID(double angleTarget, double speed, ArrayList<DcMotor> motor, BNO055IMU IMU){
 
         driveSpeed = speed;
-        target =  Math.abs(angleTarget)*-1;
+        target =  Math.abs(angleTarget);
         leftFront = motor.get(0);
         rightFront = motor.get(1);
         leftBack = motor.get(2);
         rightBack = motor.get(3);
         imu = IMU;
-        //clockwise = CLOCKWISE;
+
 
     }
 
@@ -138,12 +138,7 @@ public class GyroTurnCWByPID implements StateMachine.State {
 
         lastAngles = angles;
 
-        if(clockwise == false){
-            return globalAngle*1;
-        }else if(clockwise == true){
-            return globalAngle*-1;
-        }
-        else //if(!clockwise ==)
+
             return globalAngle;
     }
 
